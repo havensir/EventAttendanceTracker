@@ -7,9 +7,7 @@ Group 4 project repo for IT4045C Enterprise Application Development (Fall 2025).
 
 **Design Board Link:** https://github.com/users/havensir/projects/2
 
-**Course:** Enterprise Application Development (Fall 2025) 
-
-**Team:** Group 4
+# Group PSA: Please **ALWAYS** branch off `dev`, **not** main.
 
 ### 1. Introduction
 *Section Owner: Isabella (PO / Scrum Master / DevOps / GitHub Admin)* 
