@@ -112,7 +112,7 @@ Each story must use the format:
 ### 🧾 JSON Schema
 *Owner: **Christopher (Developer – Support/Flex)** → refine this schema & expand for other endpoints*
 
-👉 Christopher, please use the starter CheckIn schema below as a base. Expand it to include **Event, Attendee, and Registration objects** so our API returns consistent, structured JSON. Save the final version to the `/docs/json-schema.json` file.
+👉 Christopher, please use the starter CheckIn schema below as a base. Expand it to include **Event, Attendee, and Registration objects** so our API returns consistent, structured JSON. 
 
 ```json
 {
