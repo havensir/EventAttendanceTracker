@@ -1,159 +1,152 @@
-# IT4045C-group4-project
-Group 4 project repo for IT4045C Enterprise Application Development (Fall 2025).
+# 🎟️ Event Attendance Tracker
+This is the Group 4 project repo for IT4045C Enterprise Application Development (Fall 2025).
 
-## Project Design Document
+## Group PSA 🚨
+Please **ALWAYS** branch off `dev`, **not** main.
 
-**Repo link:** https://github.com/havensir/IT4045C-group4-project
+## 📑 Project Design Document
+### 📝 Introduction 
 
-**Design Board Link:** https://github.com/users/havensir/projects/2
+EventAttendanceTracker is a web application used by event organizers and attendees to streamline event check-in and attendance tracking.
 
-# Group PSA: Please **ALWAYS** branch off `dev`, **not** main.
+- **Organizers** can: 
+  - create/manage events
+  - register/import attendees
+  - Check in attendees (via QR code or manually)
+  - View live dashboards
+  - Export reports
 
-### 1. Introduction
-*Section Owner: Isabella (PO / Scrum Master / DevOps / GitHub Admin)* 
+- **Attendees** can:
+  - Register for events
+  - Receive a QR ticket
+  - Quickly check in
 
-[Write a short description of your project here.]  
-
-- **Problem Statement:** What problem are we solving?  
-  - [ANSWER HERE]  
-- **Tech Stack:** What technologies will we use?  
-  - [ANSWER HERE]  
-- **Users & Value:** What will the user experience look like?  
-  - [ANSWER HERE]  
-
----
-
-### 2. Storyboard (Screen Mockups)
-*Owner: Silas (UI Specialist)*  
-
-- Add mockups/screenshots in `/docs/mockups/`.  
-- Each screen should have a short caption explaining its purpose.  
-- Tools like PowerPoint, Figma, InVision, or Paint are fine.  
-
-**Screens to include:**  
-- **Screen 1 – [Description / Image link]**  
-- **Screen 2 – [Description / Image link]**  
-- **Screen 3 – [Description / Image link]**  
+This system replaces manual sign-in sheets with a faster, more accurate digital workflow that provides real-time insights.
 
 ---
 
-### 3. Functional Requirements
-*Owner: Team (**each member contributes one**, total 2–4 stories max per rubric)*
+### 🚀 Startup Notes
+*Key startup notes will eventually go here*
 
-**Format:**
-- **As a [User]**  
-- **I want [Feature]**  
-- **So that I can [Do something]**
+---
 
-Include **Given / When / Then** acceptance criteria for each story (cover good data, bad data, and edge cases).
+### 🖼️ Storyboard (Screen Mockups)
+*Owner: **Silas (UI Specialist)** → add mockups to `/docs/mockups/`*
 
+👉 Silas, please design and include **3–5 mockups** that illustrate the key screens of the application. Each mockup should:
+- Be labeled clearly (e.g., “Registration Form,” “Check-In Screen”)
+- Be exported into `/docs/mockups/` as image files
+  - *Optionally, combine multiple mockups into one screenshot if easier*
 
-#### EXAMPLE Starter Stories  
-1) **Login Feature (UI focus)**  
-- As a user, I want to log in so that I can access my personal dashboard.  
-  - **Given** I am on the login page  
-  - **When** I enter valid credentials  
-  - **Then** I am redirected to the dashboard  
-  - **And** I see my name and a success message  
-  - **When** I enter invalid credentials  
-  - **Then** I remain on the login page with an error message
+👉 Replace the placeholder below with your mockups:
+ - [Screen](URL HERE)
 
-2) **Data Persistence Feature (BL focus)**  
-- As a user, I want my changes saved so that I can see updated data when I log back in.  
-  - **Given** I update an item in my list  
-  - **When** I refresh or log out/in  
-  - **Then** the updated data is still present in my list
+**Recommended screens to cover:**
+ - Event Registration (attendee form)
+ - QR Ticket confirmation
+ - Organizer Dashboard (live attendance stats)
+ - Check-In page (QR scan or manual entry)
+ - Export Reports screen
 
-** Team Stories (placeholders for now): **
+---
+
+### ⚙️ Functional Requirements
+*Owner: **Team** (each member contributes one; total 2–4 stories max per rubric)*
+
+Each story must use the format:
+- As a **[User]**, I want **[Feature]** so that **[Benefit]**
+- Include acceptance criteria using **Given / When / Then**. Cover at least:
+  - Valid data
+  - Invalid data
+  - Edge cases
  
-*[Isabella's Story]*
-- As a **?**, I want **?**, so that I can **?**.
-  - **Given** [some context or precondition]
-  - **When** [an action is taken]
-  - **Then** [the expected outcome happens]
+✅ Isabella’s Story (Organizer – QR Check-In)
+  - As an **Organizer**, I want **to scan attendee QR codes**, so that I can **quickly check them in**.
+    - **Given** a valid ticket QR code
+    - **When** I scan it on the Check-In page
+    - **Then** the attendee is marked present and a confirmation is shown
+    - **When** I scan an invalid/duplicate code
+    - **Then** I see an error message
 
-*[Silas' Story]*
-- As a **?**, I want **?**, so that I can **?**.
-  - **Given** [some context or precondition]
-  - **When** [an action is taken]
-  - **Then** [the expected outcome happens]
+🖼️ Silas’ Story (UI)
+- *Example idea: “As an Attendee, I want to register online so I can receive a QR ticket.”*
+- 👉 Fill in your user story below.
+  -  As a **?**, I want **?**, so that I can **?**.
+      - **Given** [some context or precondition]
+      - **When** [an action is taken]
+      - **Then** [the expected outcome happens]
 
-*[Nathan's Story]*
-- As a **?**, I want **?**, so that I can **?**.
-  - **Given** [some context or precondition]
-  - **When** [an action is taken]
-  - **Then** [the expected outcome happens]
+💾 Nathan’s Story (Business Logic & Persistence)
+- *Example idea: “As an Organizer, I want check-in data saved in the database so that it persists after refresh.”*
+- 👉 Fill in your user story below.
+  -  As a **?**, I want **?**, so that I can **?**.
+      - **Given** [some context or precondition]
+      - **When** [an action is taken]
+      - **Then** [the expected outcome happens]
 
-*[Christopher's Story]*
-- As a **?**, I want **?**, so that I can **?**.
-  - **Given** [some context or precondition]
-  - **When** [an action is taken]
-  - **Then** [the expected outcome happens]
-
----
-
-### 4. Class Diagram
-*Owner: Nathan (Business Logic & Persistence Specialist)*  
-
-- Add UML diagram image to `/docs/diagrams/` and link it here.  
-  `![Class Diagram](./docs/diagrams/class-diagram.png)`
-
-**Class descriptions (1–2 lines each; replace with actual classes):**
-- **User** — id, email, role; owns domain objects and permissions.  
-- **Item** — core entity for the app’s main feature (id, name, status, timestamps).  
-- **ItemController / ItemService / ItemRepository** — REST endpoints, business rules, persistence.
+🛠️ Christopher’s Story (Support/Flex)
+- *Example idea: “As an Organizer, I want to export attendance reports so I can keep records after the event.”*
+- 👉 Fill in your user story below.
+  -  As a **?**, I want **?**, so that I can **?**.
+      - **Given** [some context or precondition]
+      - **When** [an action is taken]
+      - **Then** [the expected outcome happens]
 
 ---
 
-### 5. JSON Schema
-*Owner: Christopher (Developer – Support/Flex)*
+### 📊 Class Diagram
+*Owner: **Nathan (Business Logic & Persistence Specialist)** → add diagram to `/docs/diagrams/`*  
 
-This project exposes at least one REST endpoint that returns JSON. Draft schema below (can be generated from a Java DTO via [QuickType.io](https://quicktype.io/)).
+👉 Nathan, please create a UML class diagram for the core system entities. Save it to `/docs/diagrams/`.
+
+**Starter entities to include (refine/expand as needed):**
+- Event — id, name, location, start/end times
+- Session — id, eventId, name, start/end times
+- Attendee — id, name, email, ticketCode
+- Registration — links attendee to event, holds status (pending/confirmed/canceled)
+- CheckIn — id, registrationId, sessionId, timestamp, method (QR/manual)
+- User (Organizer) - id, email, role
+
+---
+
+### 🧾 JSON Schema
+*Owner: **Christopher (Developer – Support/Flex)** → refine this schema & expand for other endpoints*
+
+👉 Christopher, please use the starter CheckIn schema below as a base. Expand it to include **Event, Attendee, and Registration objects** so our API returns consistent, structured JSON. Save the final version to the `/docs/json-schema.json` file.
 
 ```json
 {
-  "title": "Example Item",
+  "title": "CheckIn",
   "type": "object",
   "properties": {
-    "id": { "type": "integer", "minimum": 1 },
-    "name": { "type": "string" },
-    "status": { "type": "string", "enum": ["ACTIVE", "ARCHIVED"] },
-    "createdAt": { "type": "string", "format": "date-time" },
-    "updatedAt": { "type": "string", "format": "date-time" }
+    "checkInId": { "type": "integer", "minimum": 1 },
+    "registrationId": { "type": "integer" },
+    "ticketCode": { "type": "string" },
+    "checkInTime": { "type": "string", "format": "date-time" },
+    "method": { "type": "string", "enum": ["QR", "MANUAL"] }
   },
-  "required": ["id", "name", "status"]
+  "required": ["checkInId", "registrationId", "ticketCode", "checkInTime", "method"]
 }
 ```
+
 ---
 
-### 6. Scrum Roles
+### 👥 Scrum Roles
 - **PO / Scrum Master / DevOps / GitHub Admin:** Isabella Havens
-
 - **UI Specialist:** Silas Curry
-
 - **Business Logic & Persistence Specialist:** Nathan Dahlquist 
-
 - **Developer (Support/Flex):** Christopher Manzon
 
+---
+
+### 🔗 GitHub Links
+- [Event Attendance Tracker](https://github.com/havensir/EventAttendanceTracker) 
+- [Design Board](https://github.com/users/havensir/projects/2)
+- [Milestones](https://github.com/havensir/EventAttendanceTracker/milestones)
 
 ---
 
-### 7. GitHub Project & Milestones
-*Owner: Isabella (PO / Scrum Master / DevOps)*
-- Project Board: https://github.com/users/havensir/projects/2
-
-**Milestones:** (due dates TBD)
-
-- Milestone #1: Design & Sprint 1 *(Sprint 1 tasks and stories will be detailed on the GitHub Project Board.)*
-- Milestone #2: Sprint 2
-- Milestone #3: Final Release
-  
----
-
-### 8. Stand-Up Meetings
-- **Chosen schedule (replaces guide’s Sunday 8:00 suggestion): Tuesdays @ 11:00 AM ET**
-
+### 📅 Group Stand-Up Meetings
+- **Schedule:** Tuesdays @ 11:00 AM ET
 - **Platform:** Microsoft Teams
-
-- **Notes:** Meeting time is flexible and may shift depending on individual group members’ schedules or events. 
-Isabella will send a post-stand-up recap and to-do list after each meeting.
+- **Notes:** Isabella will send recaps and task lists after each meeting.
