@@ -85,13 +85,19 @@ Each story must use the format:
       - **Then** [the expected outcome happens]
 
 🛠️ Christopher’s Story (Support/Flex)
-- *Example idea: “As an Organizer, I want to export attendance reports so I can keep records after the event.”*
-- 👉 Fill in your user story below.
-  -  As a **?**, I want **?**, so that I can **?**.
-      - **Given** [some context or precondition]
-      - **When** [an action is taken]
-      - **Then** [the expected outcome happens]
-
+  -  As an **Attendee**, I want **to register for an event online by filling out a simple form or scanning a shared link**, so that I can **can secure my spot at the event without needing to register on-site**.
+      - **Given** I open the event registration page,
+      - **When** I provide my name, email, and required details,
+      - **Then** I receive a confirmation email and a unique QR code for event check-in.
+      - **Given** I mistype my email,
+      - **When** I try to submit the form,
+      - **Then** I should see a validation error and be prompted to correct my input.
+      - **Given** I leave a required (such as name or email )field empty,
+      - **When** I try to submit the form,
+      - **Then** I should see an error prompting me to complete all required fields before submission.
+      - **Given** the event has reached the maximum capacity,
+      - **When** I attempt to register,
+      - **Then** I should see a message that the event is full and cannot accept more registrations.
 ---
 
 ### 📊 Class Diagram
