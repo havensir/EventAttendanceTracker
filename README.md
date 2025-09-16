@@ -69,7 +69,6 @@ Each story must use the format:
     - **Then** I see an error message
 
 🖼️ Silas’ Story (UI)
-- *Example idea: “As an Attendee, I want to register online so I can receive a QR ticket.”*
 - 👉 Fill in your user story below.
   -  As a **?**, I want **?**, so that I can **?**.
       - **Given** [some context or precondition]
@@ -77,7 +76,6 @@ Each story must use the format:
       - **Then** [the expected outcome happens]
 
 💾 Nathan’s Story (Business Logic & Persistence)
-- *Example idea: “As an Organizer, I want check-in data saved in the database so that it persists after refresh.”*
 - 👉 Fill in your user story below.
   -  As a **?**, I want **?**, so that I can **?**.
       - **Given** [some context or precondition]
