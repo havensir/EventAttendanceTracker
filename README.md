@@ -31,22 +31,48 @@ This system replaces manual sign-in sheets with a faster, more accurate digital 
 ---
 
 ### 🖼️ Storyboard (Screen Mockups)
-*Owner: **Silas (UI Specialist)** → add mockups to `/docs/mockups/`*
+*Owner: **Silas (UI Specialist)** → mockups in `/docs/mockups/`*
+## JoinUp Wireframes & Flows
 
-👉 Silas, please design and include **3–5 mockups** that illustrate the key screens of the application. Each mockup should:
-- Be labeled clearly (e.g., “Registration Form,” “Check-In Screen”)
-- Be exported into `/docs/mockups/` as image files
-  - *Optionally, combine multiple mockups into one screenshot if easier*
+This describes the user experience for the JoinUp app, focusing on what the user sees and does at each step. Screens are described by their function and user-facing content, not by internal names.
 
-👉 Replace the placeholder below with your mockups:
- - [Screen](URL HERE)
+### Check-In Flow
 
-**Recommended screens to cover:**
- - Event Registration (attendee form)
- - QR Ticket confirmation
- - Organizer Dashboard (live attendance stats)
- - Check-In page (QR scan or manual entry)
- - Export Reports screen
+- The user is greeted personally and prompted to check in to an event.
+- The user views a list of events and tickets, each with details.
+- After checking in, the user receives confirmation and encouragement, plus a list of other events to explore.
+
+
+### Host Flow
+
+- The user is welcomed and prompted to host an event.
+- The user fills out event details (name, description, location, time, image).
+- The user enters contact information, which is auto-filled but editable.
+- The user previews how guests will see the event.
+- The user publishes the event and receives confirmation that it’s live and ready to share.
+
+
+
+### RSVP Flow
+
+- The user searches for events by city.
+- The user browses a list of events, each with details and a button to view more.
+- The user is prompted to register for an event.
+- The user fills out a registration form with personal details, auto-filled but editable.
+- The user receives confirmation of ticket purchase, with event and attendee details.
+- The user is instructed on how to present the ticket at check-in (QR code/manual code).
+- The user has the option to print the ticket.
+
+
+
+## Flow Links
+
+These frames are not set up with prototyping logic. You must use the arrow keys to progress through them.
+- [Check-In Flow](https://www.figma.com/proto/Rb01LyZV0CP1YWRNN7Lal8/Untitled?node-id=65-1301&p=f&t=8ZFl9UUuSKDKGZCa-1&scaling=contain&content-scaling=fixed&page-id=)
+- [Host Flow](https://www.figma.com/proto/Rb01LyZV0CP1YWRNN7Lal8/Untitled?node-id=65-1569&p=f&t=75spmTPWToZqb3fH-1&scaling=contain&content-scaling=fixed&page-id=65%3A1375)
+- [RSVP Flow](https://www.figma.com/proto/Rb01LyZV0CP1YWRNN7Lal8/Untitled?node-id=65-1789&p=f&t=xrycxG5dpdJhCWfK-1&scaling=contain&content-scaling=fixed&page-id=65%3A1573)
+
+
 
 ---
 
