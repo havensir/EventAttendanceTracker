@@ -94,13 +94,34 @@ Each story must use the format:
     - **When** I scan an invalid/duplicate code
     - **Then** I see an error message
 
-🖼️ Silas’ Story (UI)
-- *Example idea: “As an Attendee, I want to register online so I can receive a QR ticket.”*
-- 👉 Fill in your user story below.
-  -  As a **?**, I want **?**, so that I can **?**.
-      - **Given** [some context or precondition]
-      - **When** [an action is taken]
-      - **Then** [the expected outcome happens]
+      
+ 🖼️ Silas’s Story (UI)
+
+As an Attendee, I want to browse events in my city and RSVP easily, so that I can quickly find and register for local events that interest me.
+
+- **Valid Data**
+  - Given I am on the events page,
+  - When I select my city from the search or filter options,
+  - Then I see a list of upcoming events in my city, each with details (name, location, date/time) and a clear RSVP button.
+  - When I click RSVP for an event,
+  - Then I am prompted to fill out a registration form and, upon successful submission, receive a confirmation and a QR ticket.
+
+- **Invalid Data**
+  - Given I am on the events page,
+  - When I select a city with no upcoming events,
+  - Then I see a friendly message indicating there are no events available in my city.
+  - Given I am filling out the RSVP form,
+  - When I leave required fields empty or enter an invalid email,
+  - Then I see a clear error message prompting me to correct my input before submitting.
+
+- **Edge Cases**
+  - Given I am on the events page,
+  - When I attempt to RSVP for an event that is already full,
+  - Then I see a message that registration is closed for that event.
+  - Given I have RSVP’d to multiple events,
+  - When I return to the events page,
+  - Then I can easily view and manage my upcoming RSVPs and tickets.
+
 
 💾 Nathan’s Story (Business Logic & Persistence)
 - *Example idea: “As an Organizer, I want check-in data saved in the database so that it persists after refresh.”*
