@@ -148,16 +148,68 @@ Each story must use the format:
 
 ```json
 {
-  "title": "CheckIn",
-  "type": "object",
-  "properties": {
-    "checkInId": { "type": "integer", "minimum": 1 },
-    "registrationId": { "type": "integer" },
-    "ticketCode": { "type": "string" },
-    "checkInTime": { "type": "string", "format": "date-time" },
-    "method": { "type": "string", "enum": ["QR", "MANUAL"] }
-  },
-  "required": ["checkInId", "registrationId", "ticketCode", "checkInTime", "method"]
+"title": "CheckIn",
+"type": "object",
+"description": "Represents a single attendee check-in at an event or session.",
+"properties":{
+"checkInId":{
+"type": "string",
+"description": "Unique ID for the check-in record(system generated)."
+},
+
+"anttendeeId": {
+"type": "string",
+"description": "Unique identifier for the attendee who is checking in."
+},
+
+"eventId": {
+"type": "string",
+"description": "Identifier of the event or session being attended."
+},
+
+"timestamp": {
+"type": "string",
+"format": "date-time",
+"description": "The exact time when the attendee checked in."
+},
+
+"status": {
+"type": "string",
+"enum": ["success", "duplicate", "invalid"],
+"description": "Result of the check-in attempt: success, duplicate scan, or invalid entry."
+},
+
+"method": {
+"type": "string",
+"enum": ["QR", "manual"],
+"description": "How the attendee checked in: by scanning QR code or manual lookup."
+}
+},
+
+"required": [
+"checkinId", "attendeeId", "eventId", "timestamp", "status", "method"
+]
+}
+
+Examples of JSON Objects: 
+QR Example:
+{
+checkinId: "CHK12345",
+attendeeId: "ATT67890",
+eventId: "EVT2025SPRING",
+timestamp: "2025-09-16T14:05:00Z",
+"status": "success",
+"method": "QR"
+}
+
+Manual Check-In Example:
+{
+"checkinId": "CHK54321"
+"attendeeId": "ATT98765",
+"eventId": "EVT2025SPRING",
+"timestamp": "2025-09-16T14:10:00Z",
+"status": "success",
+"method": "manual"
 }
 ```
 
