@@ -31,22 +31,48 @@ This system replaces manual sign-in sheets with a faster, more accurate digital 
 ---
 
 ### 🖼️ Storyboard (Screen Mockups)
-*Owner: **Silas (UI Specialist)** → add mockups to `/docs/mockups/`*
+*Owner: **Silas (UI Specialist)** → mockups in `/docs/mockups/`*
+## JoinUp Wireframes & Flows
 
-👉 Silas, please design and include **3–5 mockups** that illustrate the key screens of the application. Each mockup should:
-- Be labeled clearly (e.g., “Registration Form,” “Check-In Screen”)
-- Be exported into `/docs/mockups/` as image files
-  - *Optionally, combine multiple mockups into one screenshot if easier*
+This describes the user experience for the JoinUp app, focusing on what the user sees and does at each step. Screens are described by their function and user-facing content, not by internal names.
 
-👉 Replace the placeholder below with your mockups:
- - [Screen](URL HERE)
+### Check-In Flow
 
-**Recommended screens to cover:**
- - Event Registration (attendee form)
- - QR Ticket confirmation
- - Organizer Dashboard (live attendance stats)
- - Check-In page (QR scan or manual entry)
- - Export Reports screen
+- The user is greeted personally and prompted to check in to an event.
+- The user views a list of events and tickets, each with details.
+- After checking in, the user receives confirmation and encouragement, plus a list of other events to explore.
+
+
+### Host Flow
+
+- The user is welcomed and prompted to host an event.
+- The user fills out event details (name, description, location, time, image).
+- The user enters contact information, which is auto-filled but editable.
+- The user previews how guests will see the event.
+- The user publishes the event and receives confirmation that it’s live and ready to share.
+
+
+
+### RSVP Flow
+
+- The user searches for events by city.
+- The user browses a list of events, each with details and a button to view more.
+- The user is prompted to register for an event.
+- The user fills out a registration form with personal details, auto-filled but editable.
+- The user receives confirmation of ticket purchase, with event and attendee details.
+- The user is instructed on how to present the ticket at check-in (QR code/manual code).
+- The user has the option to print the ticket.
+
+
+
+## Flow Links
+
+These frames are not set up with prototyping logic. You must use the arrow keys to progress through them.
+- [Check-In Flow](https://www.figma.com/proto/Rb01LyZV0CP1YWRNN7Lal8/Untitled?node-id=65-1301&p=f&t=8ZFl9UUuSKDKGZCa-1&scaling=contain&content-scaling=fixed&page-id=)
+- [Host Flow](https://www.figma.com/proto/Rb01LyZV0CP1YWRNN7Lal8/Untitled?node-id=65-1569&p=f&t=75spmTPWToZqb3fH-1&scaling=contain&content-scaling=fixed&page-id=65%3A1375)
+- [RSVP Flow](https://www.figma.com/proto/Rb01LyZV0CP1YWRNN7Lal8/Untitled?node-id=65-1789&p=f&t=xrycxG5dpdJhCWfK-1&scaling=contain&content-scaling=fixed&page-id=65%3A1573)
+
+
 
 ---
 
@@ -69,11 +95,30 @@ Each story must use the format:
     - **Then** I see an error message
 
 🖼️ Silas’ Story (UI)
-- 👉 Fill in your user story below.
-  -  As a **?**, I want **?**, so that I can **?**.
-      - **Given** [some context or precondition]
-      - **When** [an action is taken]
-      - **Then** [the expected outcome happens]
+  - As an Attendee, I want to browse events in my city and RSVP easily, so that I can quickly find and register for local events that interest me.
+
+  - **Valid Data**
+    - Given I am on the events page,
+    - When I select my city from the search or filter options,
+    - Then I see a list of upcoming events in my city, each with details (name, location, date/time) and a clear RSVP button.
+    - When I click RSVP for an event,
+    - Then I am prompted to fill out a registration form and, upon successful submission, receive a confirmation and a QR ticket.
+
+  - **Invalid Data**
+    - Given I am on the events page,
+    - When I select a city with no upcoming events,
+    - Then I see a friendly message indicating there are no events available in my city.
+    - Given I am filling out the RSVP form,
+    - When I leave required fields empty or enter an invalid email,
+    - Then I see a clear error message prompting me to correct my input before submitting.
+
+  - **Edge Cases**
+    - Given I am on the events page,
+    - When I attempt to RSVP for an event that is already full,
+    - Then I see a message that registration is closed for that event.
+    - Given I have RSVP’d to multiple events,
+    - When I return to the events page,
+    - Then I can easily view and manage my upcoming RSVPs and tickets.
 
 💾 Nathan’s Story (Business Logic & Persistence)
 - 👉 Fill in your user story below.
