@@ -24,7 +24,25 @@ This system replaces manual sign-in sheets with a faster, more accurate digital 
 
 
 ## 🚀 Startup Notes
-*Key application startup notes will eventually go here*
+
+### 🧩 Requirements
+- Java 17 or higher
+- Maven (or use VS Code Spring Boot Extension Pack)
+
+### ▶️ Running the Application (VS Code)
+1. Open this folder (`EventAttendanceTracker`) in VS Code.
+2. Make sure the **Java Extension Pack** and **Spring Boot Extension Pack** are enabled.
+3. Open the **Spring Boot Dashboard** (on the left sidebar).
+4. Find `JoinUpApplication` → click the **▶ Run** button.
+5. Wait for the console to show...
+6. Open your browser and go to [http://localhost:8080/api/events](http://localhost:8080/api/events)
+- You should FOR NOW see: `TODO: List events` 
+- This confirms the backend is running correctly.
+
+### 💡 Notes
+- The current backend is a **skeleton (Milestone 1)** - all endpoints return “501 Not Implemented.”
+- Future milestones will implement actual logic in each layer.
+- `.gitkeep` files keep the folder structure visible for everyone until real code is added.
 
 ## 🖼️ Storyboard (Screen Mockups)
 *→ Mockups can be found in `/docs/mockups/`*

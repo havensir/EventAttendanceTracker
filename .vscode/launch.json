@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-JoinUpApplication<joinup>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.joinup.JoinUpApplication",
+            "projectName": "joinup",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
