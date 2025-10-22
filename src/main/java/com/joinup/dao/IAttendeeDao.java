@@ -1,4 +1,10 @@
 package com.joinup.dao;
 
-// TODO: define methods for attendee data access
-public interface IAttendeeDao { }
+import com.joinup.model.Attendee;
+import java.util.List;
+
+public interface IAttendeeDao {
+    List<Attendee> getAllAttendees();
+    Attendee getAttendeeById(int id);
+    void registerAttendee(Attendee attendee);
+}

@@ -1,4 +1,9 @@
 package com.joinup.service;
 
-// TODO: add methods like listAttendees() and registerAttendee()
-public interface IAttendeeService { }
+import com.joinup.model.Attendee;
+import java.util.List;
+
+public interface IAttendeeService {
+    List<Attendee> listAttendees();
+    void registerAttendee(Attendee attendee);
+}

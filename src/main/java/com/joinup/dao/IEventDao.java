@@ -1,4 +1,10 @@
 package com.joinup.dao;
 
-// TODO: define methods for event data access
-public interface IEventDao { }
+import java.util.List;
+import com.joinup.model.Event;
+
+public interface IEventDao {
+    List<Event> getAllEvents();
+    Event getEventById(int id);
+    void addEvent(Event event);
+}
