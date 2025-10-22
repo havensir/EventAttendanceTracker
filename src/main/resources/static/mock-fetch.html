@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>JoinUp API Smoke Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+        body { margin: 2rem; max-width: 980px; }
+        h1 { margin: 0 0 1rem; }
+        button { padding: .6rem 1rem; border-radius: 10px; border: 1px solid #ddd; cursor: pointer; }
+        .ok { color: #137333; }
+        .warn { color: #b06000; }
+        .err { color: #b00020; }
+        .row { margin-top: 1rem; }
+        .card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem; margin: 1rem 0; }
+        .meta { font-size: .9rem; color: #555; margin: .25rem 0 .5rem; }
+        .badge { display: inline-block; padding: .15rem .5rem; border-radius: 999px; font-size: .8rem; border: 1px solid #e5e7eb; }
+        .badge.ok { background: #eef7ef; }
+        .badge.warn { background: #fff5e6; }
+        .badge.err { background: #ffeef0; }
+        pre { background:#f6f8fa; padding:1rem; border-radius:10px; overflow:auto; margin: .5rem 0 0; }
+        code { user-select: all; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem 1rem; }
+        @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<h1>JoinUp API Smoke Test</h1>
+<p>This page calls the backend endpoints and prints raw JSON. For Milestone 1, a <strong>501 Not Implemented</strong> response counts as a placeholder success.</p>
+
+<div class="row grid">
+    <div><strong>Base:</strong> <code id="base"></code></div>
+    <div><strong>Allowed success statuses:</strong> <code>200, 201, 204, 501</code></div>
+</div>
+
+<div class="row">
+    <button id="run">Run Tests</button>
+</div>
+
+<div id="out"></div>
+
+<script>
+    const base = location.origin; // e.g., http://localhost:8080
+    document.getElementById('base').textContent = base;
+
+    // Endpoints to test (all GET for M1)
+    const endpoints = [
+      { name: "Events",    url: "/api/events",    method: "GET" },
+      { name: "Attendees", url: "/api/attendees", method: "GET" }, // add ?eventId=1 in M2 if needed
+      { name: "Checkins",  url: "/api/checkins",  method: "GET" }, // add ?eventId=1 in M2 if needed
+    ];
+
+    // Treat 501 as "placeholder success" for Milestone 1
+    const okStatuses = new Set([200, 201, 204, 501]);
+
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+    function badgeFor(status) {
+      if (status === 501) return '<span class="badge warn">⚠️ 501 (placeholder)</span>';
+      if (okStatuses.has(status)) return `<span class="badge ok">✅ ${status}</span>`;
+      return `<span class="badge err">❌ ${status}</span>`;
+    }
+    function log(html) {
+      document.getElementById('out').insertAdjacentHTML('beforeend', html);
+    }
+
+    async function testEndpoint({name, url, method="GET", body}) {
+      const full = url.startsWith('http') ? url : `${base}${url}`;
+      const t0 = performance.now();
+      try {
+        const res = await fetch(full, {
+          method,
+          headers: { "Accept": "application/json", "Content-Type": "application/json" },
+          body: body ? JSON.stringify(body) : undefined
+        });
+        const text = await res.text();
+        const t1 = performance.now();
+        const ms = (t1 - t0).toFixed(0);
+
+        const good = okStatuses.has(res.status);
+        const stateClass = res.status === 501 ? 'warn' : (good ? 'ok' : 'err');
+
+        log(`
+          <div class="card">
+            <div class="${stateClass}">
+              <strong>${name}</strong> — <code>${full}</code>
+              ${badgeFor(res.status)} <span class="meta">(${method}, ${ms} ms)</span>
+            </div>
+            <div class="meta">Content-Type: ${escapeHtml(res.headers.get('content-type') || 'n/a')}</div>
+            <pre>${escapeHtml(text)}</pre>
+          </div>
+        `);
+
+        if (!good) {
+          // throw to mark as error in console, but we already rendered above
+          throw new Error(`Unexpected status ${res.status}`);
+        }
+      } catch (e) {
+        const t1 = performance.now();
+        const ms = (t1 - t0).toFixed(0);
+        log(`
+          <div class="card">
+            <div class="err"><strong>${name}</strong> — <code>${full}</code> <span class="badge err">❌ Error</span> <span class="meta">(${method}, ${ms} ms)</span></div>
+            <pre>${escapeHtml(String(e))}</pre>
+          </div>
+        `);
+      }
+    }
+
+    document.getElementById('run').addEventListener('click', async () => {
+      document.getElementById('out').innerHTML = "";
+      for (const ep of endpoints) {
+        // Run sequentially to keep output ordered
+        // eslint-disable-next-line no-await-in-loop
+        await testEndpoint(ep);
+      }
+    });
+</script>
+</body>
+</html>
