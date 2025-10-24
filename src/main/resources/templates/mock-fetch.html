@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/></head>
+<body>
+<div th:replace="~{layout :: shell('tester', 'API Route Tester', ~{::content})}">
+  <div th:fragment="content">
+
+    <div class="toolbar" style="display:flex;gap:8px;align-items:center;background:#fff;border:1px solid #e6e6e6;border-radius:12px;padding:12px">
+      <button id="runAll" class="btn" style="border:1px solid #d7d7d7;border-radius:10px;background:#e5f2ea;color:#144b35;font-weight:700;padding:8px 12px;cursor:pointer">▶ Run All</button>
+      <button id="clearBtn" class="btn" style="border:1px solid #d7d7d7;border-radius:10px;background:#fff;padding:8px 12px;cursor:pointer">↻ Clear</button>
+      <button id="autoBtn" class="btn" style="border:1px solid #d7d7d7;border-radius:10px;background:#fff;padding:8px 12px;cursor:pointer">⏱ Auto (5s)</button>
+      <span id="status" class="status idle" style="margin-left:auto;padding:6px 10px;border-radius:999px;border:1px solid #ddd;font-weight:700;background:#f2f2f2">Idle</span>
+    </div>
+
+    <div class="card" style="background:#fff;border:1px solid #e6e6e6;border-radius:12px;padding:14px;margin-top:14px">
+      <h3 style="margin:0 0 10px">Quick Status</h3>
+      <ul class="checklist" style="list-style:none;margin:0;padding:0">
+        <li id="chk-events"   class="check" style="display:flex;align-items:center;gap:10px;padding:12px;border:1px solid #e6e6e6;border-radius:10px;background:#fff;margin-bottom:8px"><span>Events</span><span class="time" id="t-events"   style="margin-left:auto;color:#666;font-family:ui-monospace,Menlo,Consolas,monospace"></span></li>
+        <li id="chk-attendees"class="check" style="display:flex;align-items:center;gap:10px;padding:12px;border:1px solid #e6e6e6;border-radius:10px;background:#fff;margin-bottom:8px"><span>Attendees</span><span class="time" id="t-attendees"style="margin-left:auto;color:#666;font-family:ui-monospace,Menlo,Consolas,monospace"></span></li>
+        <li id="chk-checkins" class="check" style="display:flex;align-items:center;gap:10px;padding:12px;border:1px solid #e6e6e6;border-radius:10px;background:#fff"><span>Check-ins</span><span class="time" id="t-checkins" style="margin-left:auto;color:#666;font-family:ui-monospace,Menlo,Consolas,monospace"></span></li>
+      </ul>
+    </div>
+
+    <div class="grid" style="display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));margin-top:14px">
+      <!-- Events card -->
+      <div class="card" style="background:#fff;border:1px solid #e6e6e6;border-radius:12px;padding:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+          <h3 style="margin:0">Events</h3>
+          <span class="endpoint" style="font-family:ui-monospace,Menlo,Consolas,monospace;background:#f6f6f6;border:1px solid #ececec;border-radius:8px;padding:2px 8px">GET /api/events</span>
+        </div>
+        <div class="viewtabs" style="display:flex;gap:6px;margin:8px 0 10px">
+          <button id="tab-events-json"  class="tab active" style="padding:6px 10px;border:1px solid #e6e6e6;border-radius:8px;background:#1d6a56;color:#fff" onclick="tab('events','json')">JSON</button>
+          <button id="tab-events-table" class="tab"         style="padding:6px 10px;border:1px solid #e6e6e6;border-radius:8px;background:#fff"        onclick="tab('events','table')">Table</button>
+        </div>
+        <div id="events-json"  class="json"      style="background:#0b1020;color:#d7e3ff;border-radius:10px;padding:12px;max-height:360px;overflow:auto">Run tests to see results…</div>
+        <div id="events-table" class="tablewrap" style="display:none;border:1px solid #e6e6e6;border-radius:10px;overflow:auto"></div>
+      </div>
+
+      <!-- Attendees -->
+      <div class="card" style="background:#fff;border:1px solid #e6e6e6;border-radius:12px;padding:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+          <h3 style="margin:0">Attendees</h3>
+          <span class="endpoint" style="font-family:ui-monospace,Menlo,Consolas,monospace;background:#f6f6f6;border:1px solid #ececec;border-radius:8px;padding:2px 8px">GET /api/attendees</span>
+        </div>
+        <div class="viewtabs" style="display:flex;gap:6px;margin:8px 0 10px">
+          <button id="tab-attendees-json"  class="tab active" style="padding:6px 10px;border:1px solid #e6e6e6;border-radius:8px;background:#1d6a56;color:#fff" onclick="tab('attendees','json')">JSON</button>
+          <button id="tab-attendees-table" class="tab"         style="padding:6px 10px;border:1px solid #e6e6e6;border-radius:8px;background:#fff"        onclick="tab('attendees','table')">Table</button>
+        </div>
+        <div id="attendees-json"  class="json"      style="background:#0b1020;color:#d7e3ff;border-radius:10px;padding:12px;max-height:360px;overflow:auto">Run tests to see results…</div>
+        <div id="attendees-table" class="tablewrap" style="display:none;border:1px solid #e6e6e6;border-radius:10px;overflow:auto"></div>
+      </div>
+
+      <!-- Check-ins -->
+      <div class="card" style="background:#fff;border:1px solid #e6e6e6;border-radius:12px;padding:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+          <h3 style="margin:0">Check-ins</h3>
+          <span class="endpoint" style="font-family:ui-monospace,Menlo,Consolas,monospace;background:#f6f6f6;border:1px solid #ececec;border-radius:8px;padding:2px 8px">GET /api/checkins</span>
+        </div>
+        <div class="viewtabs" style="display:flex;gap:6px;margin:8px 0 10px">
+          <button id="tab-checkins-json"  class="tab active" style="padding:6px 10px;border:1px solid #e6e6e6;border-radius:8px;background:#1d6a56;color:#fff" onclick="tab('checkins','json')">JSON</button>
+          <button id="tab-checkins-table" class="tab"         style="padding:6px 10px;border:1px solid #e6e6e6;border-radius:8px;background:#fff"        onclick="tab('checkins','table')">Table</button>
+        </div>
+        <div id="checkins-json"  class="json"      style="background:#0b1020;color:#d7e3ff;border-radius:10px;padding:12px;max-height:360px;overflow:auto">Run tests to see results…</div>
+        <div id="checkins-table" class="tablewrap" style="display:none;border:1px solid #e6e6e6;border-radius:10px;overflow:auto"></div>
+      </div>
+    </div>
+
+    <script>
+      const S = id=>document.getElementById(id);
+      const fmt = ms=>ms.toFixed(0)+' ms';
+      const view = {events:'json',attendees:'json',checkins:'json'};
+      const cache={};
+      let timer=null;
+
+      function setStatus(t,cls){
+        const el=S('status'); el.textContent=t;
+        el.className='status '+cls; el.style.background = (cls==='ok'?'#e6f6ea':cls==='err'?'#fde7ea':cls==='run'?'#fff4d6':'#f2f2f2');
+      }
+      function tab(key,which){
+        view[key]=which;
+        S(`tab-${key}-json`).classList.toggle('active',which==='json');
+        S(`tab-${key}-table`).classList.toggle('active',which==='table');
+        S(`${key}-json`).style.display=(which==='json'?'block':'none');
+        S(`${key}-table`).style.display=(which==='table'?'block':'none');
+        if(cache[key]) render(key,cache[key]);
+      }
+      function mark(key,ok,t){
+        const li=S(`chk-${key}`); li.style.background=ok?'#eaf7ee':'#fdecef';
+        li.style.borderLeft = ok ? '4px solid #138a3d' : '4px solid #b00020';
+        S(`t-${key}`).textContent=t;
+      }
+      function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+      function asTable(arr){
+        if(!Array.isArray(arr)||arr.length===0) return '<div style="padding:18px;color:#666">No rows.</div>';
+        const cols=[...new Set(arr.flatMap(o=>Object.keys(o)))];
+        let h='<table><thead><tr>'+cols.map(c=>`<th>${c}</th>`).join('')+'</tr></thead><tbody>';
+        h+=arr.map(r=>'<tr>'+cols.map(c=>`<td>${escapeHtml(String(r[c]??''))}</td>`).join('')+'</tr>').join('');
+        h+='</tbody></table>'; return h;
+      }
+      function render(key,data){
+        if(view[key]==='json'){
+          S(`${key}-json`).innerHTML = `<pre style="margin:0;white-space:pre-wrap">${escapeHtml(JSON.stringify(data,null,2))}</pre>`;
+        }else{
+          S(`${key}-table`).innerHTML = asTable(Array.isArray(data)?data:[]);
+        }
+      }
+      async function probe(key,url){
+        const t0=performance.now(); let ok=false, data=null;
+        try{ const r=await fetch(url,{headers:{Accept:'application/json'}}); ok=r.ok; data=await r.json(); }catch(e){ data={error:String(e)}; }
+        const dur=fmt(performance.now()-t0);
+        cache[key]=data; render(key,data); mark(key,ok,dur); return ok;
+      }
+      async function waitSeed(ms=8000){
+        const start=Date.now();
+        while(Date.now()-start<ms){
+          try{ const r=await fetch('/api/events'); if(r.ok){const d=await r.json(); if(Array.isArray(d)&&d.length) return true;} }catch(e){}
+          await new Promise(r=>setTimeout(r,400));
+        } return false;
+      }
+      async function runAll(){
+        setStatus('Waiting for seed…','run');
+        if(!(await waitSeed())){ setStatus('Seed timeout','err'); return; }
+        setStatus('Running…','run');
+        const e=await probe('events','/api/events');
+        const a=await probe('attendees','/api/attendees');
+        const c=await probe('checkins','/api/checkins');
+        setStatus((e&&a&&c)?'All green':'Some failures',(e&&a&&c)?'ok':'err');
+      }
+      function clearAll(){
+        ['events','attendees','checkins'].forEach(k=>{
+          S(`${k}-json`).textContent='Run tests to see results…';
+          S(`${k}-table`).innerHTML='';
+          S(`chk-${k}`).style.background='#fff';
+          S(`chk-${k}`).style.borderLeft='4px solid transparent';
+          S(`t-${k}`).textContent='';
+          cache[k]=null;
+        });
+        setStatus('Idle','idle');
+      }
+      function toggleAuto(){
+        if(timer){ clearInterval(timer); timer=null; setStatus('Idle','idle'); }
+        else{ timer=setInterval(runAll,5000); runAll(); }
+      }
+      S('runAll').onclick=runAll; S('clearBtn').onclick=clearAll; S('autoBtn').onclick=toggleAuto;
+    </script>
+
+  </div>
+</div>
+</body>
+</html>
