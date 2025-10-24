@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>JoinUp • API Route Tester</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    :root{
+      --bg:#ffffff; --card:#fafafa; --text:#111; --muted:#666; --border:#e5e7eb; --pill:#eef;
+      --ok:#0b8b2d; --bad:#b00020; --accent:#1f6feb; --code-bg:#0b1020; --code:#d7e3ff;
+    }
+    [data-theme="dark"]{
+      --bg:#0c1117; --card:#0f1520; --text:#e7edf7; --muted:#9fb0c3; --border:#1f2630; --pill:#1b263b;
+      --ok:#47d980; --bad:#ff6b6b; --accent:#79c0ff; --code-bg:#0b1020; --code:#d7e3ff;
+    }
+    *{box-sizing:border-box}
+    body{margin:24px;max-width:1200px;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    h1{margin:0 0 6px;font-weight:700;letter-spacing:.2px}
+    .muted{color:var(--muted)}
+    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .toolbar{position:sticky;top:0;background:var(--bg);z-index:5;padding:10px 0 14px;border-bottom:1px solid var(--border);margin-bottom:16px}
+    input, select, textarea{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:8px 10px;outline:none}
+    input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+    .btn{padding:9px 14px;border:1px solid var(--border);border-radius:10px;background:var(--card);cursor:pointer}
+    .btn:hover{border-color:var(--accent)}
+    .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .btn.link{border:none;background:transparent;color:var(--accent);padding:0 4px}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:999px;background:var(--pill);border:1px solid var(--border);font-size:12px}
+    .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+    .card{border:1px solid var(--border);border-radius:14px;padding:12px;background:var(--card)}
+    .card h3{margin:0 0 6px}
+    .kvs{display:flex;gap:8px;flex-wrap:wrap;font-size:12px}
+    .kvs span{border:1px solid var(--border);border-radius:999px;padding:2px 8px;background:var(--bg)}
+    pre{background:var(--code-bg);color:var(--code);padding:12px;border-radius:10px;overflow:auto;max-height:320px;margin:8px 0}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{border:1px solid var(--border);padding:6px 8px;font-size:13px;text-align:left}
+    details{border-top:1px dashed var(--border);padding-top:8px;margin-top:8px}
+    .ok{color:var(--ok);font-weight:600}
+    .bad{color:var(--bad);font-weight:600}
+    .tabs{display:flex;gap:6px;margin:6px 0}
+    .tab{padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-size:13px}
+    .tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .right{margin-left:auto}
+    .hdrs{display:grid;grid-template-columns:1fr 1fr auto;gap:6px}
+    .hdrs input{width:100%}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  </style>
+</head>
+<body data-theme="light">
+
+  <div class="toolbar row">
+    <h1>JoinUp • API Route Tester</h1>
+    <span id="summary" class="pill">Idle</span>
+    <span class="right"></span>
+    <button class="btn" id="themeBtn" title="Toggle theme">Dark mode</button>
+  </div>
+
+  <p class="muted">Hammer <code>/api/events</code>, <code>/api/attendees</code>, and <code>/api/checkins</code>. Includes headers, body (for POST), cURL, timing, and data table.</p>
+
+  <div class="row" style="gap:10px;margin:10px 0 18px">
+    <label class="mono">Base URL
+      <input id="base" value="http://localhost:8080" style="min-width:280px;margin-left:6px">
+    </label>
+    <button class="btn primary" onclick="runAll()">Run All</button>
+    <button class="btn" onclick="clearAll()">Clear</button>
+  </div>
+
+  <details>
+    <summary class="muted">Request options (headers & body)</summary>
+    <div class="row" style="margin:8px 0 4px"><strong>Headers</strong> <button class="btn link" onclick="addHeader()">+ add</button></div>
+    <div id="headers" class="hdrs">
+      <input placeholder="Header name" value="Accept" class="mono">
+      <input placeholder="Header value" value="application/json" class="mono">
+      <button class="btn" onclick="removeHeader(this)">Remove</button>
+    </div>
+    <div class="row" style="margin:12px 0 4px"><strong>Body (JSON for POST)</strong></div>
+    <textarea id="body" class="mono" rows="6" placeholder='{"example":"value"}' style="width:100%;resize:vertical"></textarea>
+  </details>
+
+  <div class="grid" style="margin-top:14px">
+    <!-- Events -->
+    <div class="card" id="card-events">
+      <h3>/api/events</h3>
+      <div class="row" style="gap:8px">
+        <select id="m-events">
+          <option>GET</option>
+          <option>POST</option>
+        </select>
+        <button class="btn" onclick="probeCard('events','/api/events')">Run</button>
+        <span id="meta-events" class="pill">Not run</span>
+        <span class="right kvs" id="kvs-events"></span>
+      </div>
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('events','json')">JSON</button>
+        <button class="tab" onclick="showTab('events','table')">Table</button>
+        <button class="tab" onclick="showTab('events','curl')">cURL</button>
+        <span class="right row" style="gap:6px">
+          <button class="btn" onclick="copyJSON('events')">Copy JSON</button>
+          <button class="btn" onclick="downloadJSON('events')">Download</button>
+        </span>
+      </div>
+      <div id="json-events"><pre id="out-events" class="mono"></pre></div>
+      <div id="table-events" style="display:none"><div id="tbl-events"></div></div>
+      <div id="curl-events" style="display:none"><pre id="curlout-events" class="mono"></pre></div>
+    </div>
+
+    <!-- Attendees -->
+    <div class="card" id="card-attendees">
+      <h3>/api/attendees</h3>
+      <div class="row" style="gap:8px">
+        <select id="m-attendees">
+          <option>GET</option>
+          <option>POST</option>
+        </select>
+        <button class="btn" onclick="probeCard('attendees','/api/attendees')">Run</button>
+        <span id="meta-attendees" class="pill">Not run</span>
+        <span class="right kvs" id="kvs-attendees"></span>
+      </div>
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('attendees','json')">JSON</button>
+        <button class="tab" onclick="showTab('attendees','table')">Table</button>
+        <button class="tab" onclick="showTab('attendees','curl')">cURL</button>
+        <span class="right row" style="gap:6px">
+          <button class="btn" onclick="copyJSON('attendees')">Copy JSON</button>
+          <button class="btn" onclick="downloadJSON('attendees')">Download</button>
+        </span>
+      </div>
+      <div id="json-attendees"><pre id="out-attendees" class="mono"></pre></div>
+      <div id="table-attendees" style="display:none"><div id="tbl-attendees"></div></div>
+      <div id="curl-attendees" style="display:none"><pre id="curlout-attendees" class="mono"></pre></div>
+    </div>
+
+    <!-- Check-ins -->
+    <div class="card" id="card-checkins">
+      <h3>/api/checkins</h3>
+      <div class="row" style="gap:8px">
+        <select id="m-checkins">
+          <option>GET</option>
+          <option>POST</option>
+        </select>
+        <button class="btn" onclick="probeCard('checkins','/api/checkins')">Run</button>
+        <span id="meta-checkins" class="pill">Not run</span>
+        <span class="right kvs" id="kvs-checkins"></span>
+      </div>
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('checkins','json')">JSON</button>
+        <button class="tab" onclick="showTab('checkins','table')">Table</button>
+        <button class="tab" onclick="showTab('checkins','curl')">cURL</button>
+        <span class="right row" style="gap:6px">
+          <button class="btn" onclick="copyJSON('checkins')">Copy JSON</button>
+          <button class="btn" onclick="downloadJSON('checkins')">Download</button>
+        </span>
+      </div>
+      <div id="json-checkins"><pre id="out-checkins" class="mono"></pre></div>
+      <div id="table-checkins" style="display:none"><div id="tbl-checkins"></div></div>
+      <div id="curl-checkins" style="display:none"><pre id="curlout-checkins" class="mono"></pre></div>
+    </div>
+  </div>
+
+  <hr style="margin:22px 0;border:1px dashed var(--border)">
+  <h2>Manual check</h2>
+  <ul class="mono">
+    <li><span id="manual-events"></span></li>
+    <li><span id="manual-attendees"></span></li>
+    <li><span id="manual-checkins"></span></li>
+  </ul>
+
+  <script>
+    const S = id => document.getElementById(id);
+    const KB = n => (n/1024).toFixed(1)+' KB';
+    const T  = ms => `${ms.toFixed(0)} ms`;
+    let cache = { events:null, attendees:null, checkins:null };
+
+    // theme
+    const themeBtn = S('themeBtn');
+    themeBtn.onclick = () => {
+      const dark = document.body.getAttribute('data-theme') === 'dark';
+      document.body.setAttribute('data-theme', dark ? 'light' : 'dark');
+      themeBtn.textContent = dark ? 'Dark mode' : 'Light mode';
+    };
+
+    // manual links reflect base
+    function syncManual(){
+      const base = S('base').value.replace(/\/+$/,'');
+      S('manual-events').textContent   = `${base}/api/events`;
+      S('manual-attendees').textContent= `${base}/api/attendees`;
+      S('manual-checkins').textContent = `${base}/api/checkins`;
+    }
+    S('base').addEventListener('input', syncManual);
+    syncManual();
+
+    // headers editor
+    function gatherHeaders(){
+      const cont = S('headers');
+      const inputs = Array.from(cont.querySelectorAll('input'));
+      const headers = {};
+      for (let i=0;i<inputs.length;i+=2){
+        const k = inputs[i].value.trim();
+        const v = (inputs[i+1]||{}).value?.trim();
+        if (k) headers[k]=v??'';
+      }
+      return headers;
+    }
+    window.addHeader = function(){
+      const row = document.createElement('div'); row.className='hdrs';
+      row.innerHTML = `
+        <input placeholder="Header name" class="mono">
+        <input placeholder="Header value" class="mono">
+        <button class="btn" onclick="removeHeader(this)">Remove</button>`;
+      S('headers').parentNode.insertBefore(row, S('headers').nextSibling);
+      // move inputs into main container layout
+      const inps = row.querySelectorAll('input'); const btn = row.querySelector('button');
+      S('headers').append(inps[0], inps[1], btn);
+      row.remove();
+    };
+    window.removeHeader = function(btn){
+      const c = S('headers');
+      const idx = Array.from(c.children).indexOf(btn);
+      // buttons appear every third element (name, value, button)
+      const bIndex = Array.from(c.children).indexOf(btn);
+      const start = bIndex-2;
+      for(let i=0;i<3;i++) c.children[start].remove();
+    };
+
+    // tabs
+    function showTab(key, which){
+      ['json','table','curl'].forEach(t=>{
+        S(`${t}-${key}`).style.display = (t===which?'block':'none');
+        Array.from(document.querySelectorAll(`#card-${key} .tab`)).forEach(el=>{
+          if(el.textContent.toLowerCase()=== (t==='curl'?'curl':t)) el.classList.toggle('active', t===which);
+        });
+      });
+    }
+    window.showTab = showTab;
+
+    // helpers
+    function asTable(key, data){
+      const wrap = S(`tbl-${key}`);
+      if (!Array.isArray(data) || data.length===0){ wrap.innerHTML = `<span class="muted">No rows.</span>`; return;}
+      const cols = Array.from(new Set(data.flatMap(o=>Object.keys(o))));
+      const head = `<thead><tr>${cols.map(c=>`<th>${escape(c)}</th>`).join('')}</tr></thead>`;
+      const rows = data.map(r=>`<tr>${cols.map(c=>`<td>${escape(String(r[c] ?? ''))}</td>`).join('')}</tr>`).join('');
+      wrap.innerHTML = `<table>${head}<tbody>${rows}</tbody></table>`;
+    }
+    function escape(s){return s.replace(/[&<>"']/g, m=>({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[m]));}
+
+    // request
+    async function probeCard(key, path){
+      const base = S('base').value.replace(/\/+$/,'');
+      const url = `${base}${path}`;
+      const method = S(`m-${key}`).value;
+      const headers = gatherHeaders();
+      let body = undefined;
+      if(method==='POST'){
+        const raw = S('body').value.trim();
+        if(raw) { try{ body = JSON.stringify(JSON.parse(raw)); } catch(e){ alert('Body must be valid JSON'); return; } }
+        headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+      }
+      // build cURL preview
+      const curl = ["curl", "-X", method, `'${url}'`]
+        .concat(Object.entries(headers).map(([k,v])=>`-H '${k}: ${v}'`))
+        .concat(body? [`-d '${body}'`] : [])
+        .join(' ');
+      S(`curlout-${key}`).textContent = curl;
+
+      const t0 = performance.now();
+      let ok=false, status=0, json=null, size=0, err=null;
+      try{
+        const res = await fetch(url, {method, headers, body});
+        status = res.status; ok = res.ok;
+        const text = await res.text();
+        size = text.length;
+        try{ json = text ? JSON.parse(text) : null; } catch(parseErr){ err = `Invalid JSON response: ${parseErr}`; }
+      }catch(e){ err=e; }
+      const t1 = performance.now();
+
+      // meta and summary
+      S(`meta-${key}`).innerHTML = ok ? `<span class="ok">OK</span> • ${status} • ${T(t1-t0)}`
+                                      : `<span class="bad">FAIL</span> • ${status||'no response'} • ${T(t1-t0)}`;
+      S(`kvs-${key}`).innerHTML = `<span>URL: <span class="mono">${escape(url)}</span></span><span>Size: ${KB(size)}</span>`;
+
+      // outputs
+      S(`out-${key}`).textContent = (err ? `ERROR: ${err}\n\n` : "") + (json!=null ? JSON.stringify(json, null, 2) : '—');
+      asTable(key, Array.isArray(json) ? json : []);
+
+      cache[key] = json;
+      bumpSummary();
+    }
+    window.probeCard = probeCard;
+
+    function bumpSummary(){
+      const keys = ['events','attendees','checkins'];
+      const green = keys.every(k => S(`meta-${k}`).textContent.includes('OK'));
+      S('summary').textContent = green ? 'All green' : 'Ran';
+      S('summary').style.background = green ? '#e7f8eb' : '#ffe';
+    }
+
+    async function runAll(){
+      S('summary').textContent = 'Running…'; S('summary').style.background = '#ffe';
+      await probeCard('events','/api/events');
+      await probeCard('attendees','/api/attendees');
+      await probeCard('checkins','/api/checkins');
+      bumpSummary();
+    }
+    window.runAll = runAll;
+
+    function clearAll(){
+      ['events','attendees','checkins'].forEach(k=>{
+        S(`meta-${k}`).textContent='Not run';
+        S(`kvs-${k}`).innerHTML='';
+        S(`out-${k}`).textContent='';
+        S(`tbl-${k}`).innerHTML='';
+        S(`curlout-${k}`).textContent='';
+      });
+      cache = {events:null,attendees:null,checkins:null};
+      S('summary').textContent='Idle'; S('summary').style.background='';
+    }
+    window.clearAll = clearAll;
+
+    function copyJSON(key){
+      const txt = S(`out-${key}`).textContent||'';
+      navigator.clipboard.writeText(txt);
+    }
+    function downloadJSON(key){
+      const data = cache[key] ?? {};
+      const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = `${key}.json`; a.click(); URL.revokeObjectURL(a.href);
+    }
+    window.copyJSON = copyJSON;
+    window.downloadJSON = downloadJSON;
+  </script>
+</body>
+</html>
