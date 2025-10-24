@@ -27,6 +27,20 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
+    <!-- UI templating (registers Thymeleaf view resolver for /templates/*.html) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+
+    <!-- (Optional but handy) Live reload during dev -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
+
     <!-- Tests (JUnit 5, MockMvc, Mockito) -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
