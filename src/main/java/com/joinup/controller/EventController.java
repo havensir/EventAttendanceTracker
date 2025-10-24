@@ -1,17 +1,32 @@
 package com.joinup.controller;
 
-import com.joinup.mock.MockData;
 import com.joinup.model.Event;
+import com.joinup.service.IEventService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/** Milestone 1: simple GET that returns mock events. */
+/** Milestone 1: simple REST controller backed by service layer (no MockData). */
 @RestController
-@RequestMapping("/api/events")
+@RequestMapping(path = "/api/events", produces = MediaType.APPLICATION_JSON_VALUE)
 public class EventController {
+
+    private final IEventService eventService;
+
+    public EventController(IEventService eventService) {
+        this.eventService = eventService;
+    }
+
+    /** GET /api/events — list all */
     @GetMapping
     public List<Event> list() {
-        return MockData.events();
+        return eventService.listEvents();
+    }
+
+    /** POST /api/events — create one (optional but handy for testing) */
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Event create(@RequestBody Event event) {
+        return eventService.createEvent(event);
     }
 }
