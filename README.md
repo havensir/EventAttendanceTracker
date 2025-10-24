@@ -2,7 +2,47 @@
 This is the Group 4 project repo for IT4045C Enterprise Application Development (Fall 2025).
 
 ## 🚨 Group PSA 🚨
-### Please *ALWAYS* **branch** off of `dev`, **not** main!
+
+### Please *ALWAYS* **branch** off of `dev`, **not** `main`!
+
+The `dev` branch is our shared development environment — **never commit directly to `dev`**.  
+Each contributor must create a **new branch for their issue or feature** before making changes.
+
+---
+
+### ✅ Correct Workflow
+
+1. **Start from `dev`**
+   - On GitHub, select the `dev` branch from the branch dropdown.
+2. **Create your own branch**
+   - Name it after your issue or task (e.g., `issue-28-controller-tests`).
+3. **Make your edits**
+   - Commit directly to *your branch only* — not to `dev`.
+4. **Open a Pull Request (PR)**
+   - Compare your branch → `dev`.
+   - Add a clear title and description of what you changed.
+   - Wait for review and approval before merging.
+
+➡️ See full directions in [`/docs/BRANCH_AND_PR_GUIDE_UI.md`](./docs/BRANCH_AND_PR_GUIDE_UI.md).
+
+---
+
+### 🧩 Project Setup Reminder
+
+If you haven’t set up the project yet, follow the step-by-step instructions here:  
+📘 [`/docs/SETUP_AND_RUN.md`](./docs/SETUP_AND_RUN.md)
+
+This includes:
+- Installing Java 17+ and Maven 3.8+
+- Running the Spring Boot app on `localhost:8080`
+- Using the mock UI tester for endpoint validation
+- Generating and viewing test reports
+
+---
+
+Let’s keep our workflow clean and consistent — this helps everyone avoid merge conflicts, broken builds, and lost work.  
+Thank you for branching responsibly! 🙌
+
 
 ## 📝 Introduction
 
