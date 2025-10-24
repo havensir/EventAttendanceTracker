@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: shell(
+        'events',
+        ${'Your city, your events.'},
+        ~{::content}
+      )}">
+
+  <th:block th:fragment="content">
+    <style>
+      /* page-only tweaks matching the home style */
+      .events-hero { color:#fff; border-radius:14px; padding:14px 16px; margin:35px }
+      .searchWrap{margin-top:8px}
+      .search{
+        width:100%; padding:14px 16px 14px 44px; font-size:16px; border-radius:12px;
+        border:1px solid #e6e6e6; background:#f7f7f7; outline:none;
+      }
+      .searchIcon{position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:.6}
+      .rel{position:relative}
+
+      .list{margin:35px;display:flex;flex-direction:column;gap:14px; margin-top:12px}
+      .row{
+        display:grid; grid-template-columns:120px 1fr 112px; align-items:center;
+        border:1px solid #e6e6e6; border-radius:14px; overflow:hidden; background:#fff;
+      }
+      .thumb{background:#eef0ea; height:100%; min-height:90px; display:grid; place-items:center}
+      .thumb svg{opacity:.7}
+      .meta{padding:12px 14px}
+      .title{font-weight:800; font-size:22px; margin-bottom:4px}
+      .muted{color:#616161; font-size:14px}
+      .ctaCell{background:#3b2a17; height:100%; display:grid; place-items:center}
+      .cta{background:transparent; color:#fff; border:none; font-weight:800; font-size:18px; cursor:pointer}
+      .empty{padding:16px; border:1px dashed #e6e6e6; border-radius:12px; color:#616161; text-align:center}
+      @media (max-width:980px){
+        .row{grid-template-columns:1fr; grid-template-rows:auto auto auto}
+        .thumb{min-height:120px}
+        .ctaCell{padding:10px}
+      }
+    </style>
+
+    <!-- Mini hero band + search -->
+    <section class="events-hero">
+      <div class="rel searchWrap">
+        <span class="searchIcon">🔎</span>
+        <input id="citySearch" class="search" placeholder="Search City (filters by Location)…" />
+      </div>
+    </section>
+
+    <!-- Events list (real data) -->
+    <section>
+      <div class="empty" th:if="${#lists.isEmpty(events)}">
+        No events yet. Once seed/real data exists, it will appear here.
+      </div>
+
+      <div id="eventsList" class="list" th:if="${!#lists.isEmpty(events)}">
+        <div class="row" th:each="e : ${events}" th:data-location="${e.location}">
+          <div class="thumb" aria-hidden="true">
+            <!-- Image placeholder -->
+            <svg width="60" height="42" viewBox="0 0 60 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="60" height="42" rx="6" fill="#d9d9d9"/>
+              <path d="M10 30l9-11 8 9 7-7 16 16H10z" fill="#bdbdbd"/>
+              <circle cx="19" cy="16" r="4" fill="#c7c7c7"/>
+            </svg>
+          </div>
+
+          <div class="meta">
+            <div class="title" th:text="${e.name}">Event Name</div>
+            <div class="muted">
+              📍 <span th:text="${e.location}">Location</span>
+              &nbsp;&nbsp;📅 <span th:text="${e.dateTime}">Date/Time</span>
+            </div>
+            <div class="muted" style="margin-top:6px">
+              Capacity: <span th:text="${e.capacity}">0</span>
+            </div>
+          </div>
+
+          <div class="ctaCell">
+            <!-- Link somewhere meaningful when you have a details page -->
+            <a class="cta" th:href="@{'/api/events'}">View</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      // Simple client-side filter by location text.
+      const input = document.getElementById('citySearch');
+      const list  = document.getElementById('eventsList');
+      input?.addEventListener('input', () => {
+        const q = input.value.trim().toLowerCase();
+        list?.querySelectorAll('.row').forEach(row => {
+          const loc = (row.getAttribute('data-location') || '').toLowerCase();
+          row.style.display = q && !loc.includes(q) ? 'none' : '';
+        });
+      });
+    </script>
+  </th:block>
+</html>
