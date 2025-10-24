@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title th:text="${appName} ?: 'JoinUp'">JoinUp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    :root { font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+    body { margin: 28px; max-width: 980px; }
+    h1 { margin: 0 0 6px; }
+    .muted { color: #666; }
+    .card { border:1px solid #e5e7eb; border-radius:12px; padding:14px; background:#fafafa; margin:14px 0; }
+    .btn { padding:10px 14px; border:1px solid #222; border-radius:10px; background:#f6f6f6; cursor:pointer }
+    .routes code { display:inline-block; padding:2px 6px; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; }
+    ul { line-height:1.6; }
+    table { border-collapse: collapse; width:100%; margin-top:8px; }
+    th, td { border:1px solid #e5e7eb; padding:8px; text-align:left; }
+    .ok { color:#0b8b2d; font-weight:600; }
+  </style>
+</head>
+<body>
+  <h1 th:text="${appName}">JoinUp (EventAttendanceTracker)</h1>
+  <p class="muted">Server-rendered UI (Thymeleaf). This is a dynamic homepage, not a static file.</p>
+
+  <div class="card">
+    <h2>📝 Introduction</h2>
+    <p>
+      <strong>JoinUp</strong> is a web app to streamline event check-in and attendance tracking.
+    </p>
+    <ul>
+      <li><strong>Organizers:</strong> create/manage events, register/import attendees, check in attendees (QR/manual), view live dashboards, export reports.</li>
+      <li><strong>Attendees:</strong> register for events, receive a QR ticket, quickly check in.</li>
+    </ul>
+    <p>This replaces manual sign-in sheets with a faster, more accurate workflow and real-time insights.</p>
+  </div>
+
+  <div class="card">
+    <h2>🚀 Startup Notes</h2>
+    <ul>
+      <li>App runs on <code>http://localhost:8080</code> by default.</li>
+      <li>Initial data is auto-seeded via the in-memory services on startup.</li>
+      <li>Use the <a href="/ui/mock-tester">API Route Tester</a> to verify endpoints.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>🔗 API Routes</h2>
+    <div class="routes">
+      <ul>
+        <li><code>/api/events</code> — List events</li>
+        <li><code>/api/attendees</code> — List attendees</li>
+        <li><code>/api/checkins</code> — List check-ins</li>
+      </ul>
+    </div>
+    <p>For a quick verification UI, open <a href="/ui/mock-tester">API Route Tester</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>🖼️ Storyboard & Flows</h2>
+    <p>See <code>/docs/mockups/</code> and design notes. (Placeholders until wired.)</p>
+    <ul>
+      <li>Check-In Flow (QR or 9-digit)</li>
+      <li>Host Flow (create & publish events)</li>
+      <li>RSVP Flow (browse & register)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📅 Upcoming Events (live from service)</h2>
+    <table th:if="${events != null and !events.isEmpty()}">
+      <thead>
+        <tr><th>ID</th><th>Name</th><th>Date/Time</th><th>Location</th><th>Capacity</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="e : ${events}">
+          <td th:text="${e.id}">E-001</td>
+          <td th:text="${e.name}">Welcome Mixer</td>
+          <td th:text="${e.dateTime}">2025-11-05T18:00:00-04:00</td>
+          <td th:text="${e.location}">Student Center Atrium</td>
+          <td th:text="${e.capacity}">150</td>
+        </tr>
+      </tbody>
+    </table>
+    <p th:if="${events == null or events.isEmpty()}" class="muted">
+      No events available yet. If this is unexpected, check seeding or your service implementation.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>⚙️ JSON & Schema</h2>
+    <p>Check the <code>/docs</code> folder for JSON schema, UML, and design artifacts.</p>
+  </div>
+
+  <div class="card">
+    <h2>✅ Status</h2>
+    <p class="ok">Milestone 1 endpoints & UI shell are in place. Unit tests exist for service interfaces; WebMvc tests cover controllers.</p>
+  </div>
+</body>
+</html>
