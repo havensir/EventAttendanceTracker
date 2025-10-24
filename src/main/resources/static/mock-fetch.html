@@ -5,330 +5,778 @@
   <title>JoinUp • API Route Tester</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <style>
-    :root{
-      --bg:#ffffff; --card:#fafafa; --text:#111; --muted:#666; --border:#e5e7eb; --pill:#eef;
-      --ok:#0b8b2d; --bad:#b00020; --accent:#1f6feb; --code-bg:#0b1020; --code:#d7e3ff;
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --card: #f1f5f9;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --ok: #10b981;
+      --bad: #ef4444;
+      --warn: #f59e0b;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-light: #dbeafe;
     }
-    [data-theme="dark"]{
-      --bg:#0c1117; --card:#0f1520; --text:#e7edf7; --muted:#9fb0c3; --border:#1f2630; --pill:#1b263b;
-      --ok:#47d980; --bad:#ff6b6b; --accent:#79c0ff; --code-bg:#0b1020; --code:#d7e3ff;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100vh;
+      padding: 20px;
     }
-    *{box-sizing:border-box}
-    body{margin:24px;max-width:1200px;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
-    h1{margin:0 0 6px;font-weight:700;letter-spacing:.2px}
-    .muted{color:var(--muted)}
-    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    .toolbar{position:sticky;top:0;background:var(--bg);z-index:5;padding:10px 0 14px;border-bottom:1px solid var(--border);margin-bottom:16px}
-    input, select, textarea{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:8px 10px;outline:none}
-    input:focus,select:focus,textarea:focus{border-color:var(--accent)}
-    .btn{padding:9px 14px;border:1px solid var(--border);border-radius:10px;background:var(--card);cursor:pointer}
-    .btn:hover{border-color:var(--accent)}
-    .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-    .btn.link{border:none;background:transparent;color:var(--accent);padding:0 4px}
-    .pill{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:999px;background:var(--pill);border:1px solid var(--border);font-size:12px}
-    .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
-    .card{border:1px solid var(--border);border-radius:14px;padding:12px;background:var(--card)}
-    .card h3{margin:0 0 6px}
-    .kvs{display:flex;gap:8px;flex-wrap:wrap;font-size:12px}
-    .kvs span{border:1px solid var(--border);border-radius:999px;padding:2px 8px;background:var(--bg)}
-    pre{background:var(--code-bg);color:var(--code);padding:12px;border-radius:10px;overflow:auto;max-height:320px;margin:8px 0}
-    table{width:100%;border-collapse:collapse;margin-top:8px}
-    th,td{border:1px solid var(--border);padding:6px 8px;font-size:13px;text-align:left}
-    details{border-top:1px dashed var(--border);padding-top:8px;margin-top:8px}
-    .ok{color:var(--ok);font-weight:600}
-    .bad{color:var(--bad);font-weight:600}
-    .tabs{display:flex;gap:6px;margin:6px 0}
-    .tab{padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-size:13px}
-    .tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-    .right{margin-left:auto}
-    .hdrs{display:grid;grid-template-columns:1fr 1fr auto;gap:6px}
-    .hdrs input{width:100%}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    header {
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+    
+    .collapsible {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .collapsible-header {
+      padding: 16px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      background: var(--accent-light);
+      transition: background 0.2s;
+      user-select: none;
+    }
+    .collapsible-header:hover {
+      background: #bfdbfe;
+    }
+    .collapsible-icon {
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+    .collapsible.collapsed .collapsible-icon {
+      transform: rotate(-90deg);
+    }
+    .collapsible-content {
+      max-height: 500px;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, padding 0.3s;
+      padding: 20px;
+    }
+    .collapsible.collapsed .collapsible-content {
+      max-height: 0;
+      padding: 0 20px;
+    }
+    .directions-list {
+      list-style: none;
+      padding: 0;
+    }
+    .directions-list li {
+      padding: 12px;
+      margin-bottom: 8px;
+      background: var(--card);
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+      display: flex;
+      gap: 12px;
+    }
+    .step-number {
+      background: var(--accent);
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .step-content {
+      flex: 1;
+    }
+    .step-content strong {
+      color: var(--text);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .step-content span {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    code {
+      background: var(--card);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      color: var(--accent);
+    }
+    
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 24px;
+      padding: 20px;
+      background: var(--surface);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: var(--card);
+    }
+    .status-badge {
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-left: auto;
+      border: 1px solid;
+    }
+    .status-idle { 
+      background: var(--card); 
+      color: var(--muted);
+      border-color: var(--border);
+    }
+    .status-running { 
+      background: #fef3c7; 
+      color: #92400e;
+      border-color: #fcd34d;
+    }
+    .status-success { 
+      background: #d1fae5; 
+      color: #065f46;
+      border-color: #6ee7b7;
+    }
+    .status-error { 
+      background: #fee2e2; 
+      color: #991b1b;
+      border-color: #fca5a5;
+    }
+    
+    .grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      margin-bottom: 32px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card h3 {
+      font-size: 1.3rem;
+      color: var(--text);
+    }
+    .endpoint-badge {
+      padding: 4px 10px;
+      background: var(--accent-light);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-family: 'Courier New', monospace;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    
+    .checklist {
+      list-style: none;
+      padding: 0;
+    }
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      margin-bottom: 8px;
+      background: var(--card);
+      border-radius: 8px;
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+    }
+    .checklist-item:hover {
+      background: #e0e7ff;
+    }
+    .checklist-item.success {
+      border-left-color: var(--ok);
+      background: #d1fae5;
+      border-color: #6ee7b7;
+    }
+    .checklist-item.error {
+      border-left-color: var(--bad);
+      background: #fee2e2;
+      border-color: #fca5a5;
+    }
+    .check-icon {
+      font-size: 1.5rem;
+      min-width: 24px;
+    }
+    .check-label {
+      flex: 1;
+      font-weight: 500;
+    }
+    .check-time {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .json-viewer {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      max-height: 400px;
+      overflow: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+    }
+    .json-viewer::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    .json-viewer::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    .json-viewer::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 4px;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      background: var(--surface);
+    }
+    thead {
+      background: var(--card);
+    }
+    th {
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text);
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody tr:hover {
+      background: var(--card);
+    }
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .view-toggle {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .view-btn {
+      padding: 6px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .view-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .view-btn:hover:not(.active) {
+      background: var(--card);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+    }
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+    
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .input-group input {
+      flex: 1;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .input-group .btn {
+      padding: 8px 16px;
+    }
   </style>
 </head>
-<body data-theme="light">
+<body>
+  <div class="container">
+    <header>
+      <h1>JoinUp API Route Tester</h1>
+      <p class="subtitle">Test and monitor your API endpoints with live data validation</p>
+    </header>
 
-  <div class="toolbar row">
-    <h1>JoinUp • API Route Tester</h1>
-    <span id="summary" class="pill">Idle</span>
-    <span class="right"></span>
-    <button class="btn" id="themeBtn" title="Toggle theme">Dark mode</button>
+    <div class="collapsible" id="directions">
+      <div class="collapsible-header" onclick="toggleCollapsible('directions')">
+        <span class="collapsible-icon">▼</span>
+        <span>📖 Quick Start Guide</span>
+      </div>
+      <div class="collapsible-content">
+        <ul class="directions-list">
+          <li>
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <strong>Start Your Server</strong>
+              <span>Make sure your backend is running at <code>http://localhost:8080</code></span>
+            </div>
+          </li>
+          <li>
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <strong>Run All Tests</strong>
+              <span>Click the "Run All Tests" button to automatically check all endpoints</span>
+            </div>
+          </li>
+          <li>
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <strong>View Results</strong>
+              <span>Toggle between JSON and Table views to inspect the response data</span>
+            </div>
+          </li>
+          <li>
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <strong>Custom Requests</strong>
+              <span>Use the input fields below each endpoint to send custom queries (e.g., <code>?eventId=2</code>)</span>
+            </div>
+          </li>
+          <li>
+            <div class="step-number">5</div>
+            <div class="step-content">
+              <strong>Auto-Refresh</strong>
+              <span>Enable auto-refresh to continuously monitor your endpoints every 5 seconds</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-primary" onclick="runAll()">
+        <span>▶</span> Run All Tests
+      </button>
+      <button class="btn btn-secondary" onclick="clearChecklist()">
+        <span>↻</span> Clear Results
+      </button>
+      <button class="btn btn-secondary" onclick="toggleAutoRefresh()">
+        <span id="autoRefreshIcon">⏸</span> <span id="autoRefreshText">Auto-refresh</span>
+      </button>
+      <span id="summary" class="status-badge status-idle">Idle</span>
+    </div>
+
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="card-header">
+        <h3>Quick Status</h3>
+      </div>
+      <ul class="checklist">
+        <li class="checklist-item" id="chk-events">
+          <span class="check-icon">⬜</span>
+          <span class="check-label">Events Endpoint</span>
+          <span class="check-time" id="time-events"></span>
+        </li>
+        <li class="checklist-item" id="chk-attendees">
+          <span class="check-icon">⬜</span>
+          <span class="check-label">Attendees Endpoint</span>
+          <span class="check-time" id="time-attendees"></span>
+        </li>
+        <li class="checklist-item" id="chk-checkins">
+          <span class="check-icon">⬜</span>
+          <span class="check-label">Check-ins Endpoint</span>
+          <span class="check-time" id="time-checkins"></span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-header">
+          <h3>Events</h3>
+          <span class="endpoint-badge">GET /api/events</span>
+        </div>
+        <div class="view-toggle">
+          <button class="view-btn active" onclick="switchView('events', 'json')">JSON</button>
+          <button class="view-btn" onclick="switchView('events', 'table')">Table</button>
+        </div>
+        <div id="view-events-json" class="json-viewer">
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <div>Run tests to see results</div>
+          </div>
+        </div>
+        <div id="view-events-table" class="table-container" style="display:none;">
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <div>Run tests to see results</div>
+          </div>
+        </div>
+        <div class="input-group">
+          <input type="text" placeholder="Send custom request..." id="custom-events">
+          <button class="btn btn-primary" onclick="sendCustom('events')">Send</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Attendees</h3>
+          <span class="endpoint-badge">GET /api/attendees</span>
+        </div>
+        <div class="view-toggle">
+          <button class="view-btn active" onclick="switchView('attendees', 'json')">JSON</button>
+          <button class="view-btn" onclick="switchView('attendees', 'table')">Table</button>
+        </div>
+        <div id="view-attendees-json" class="json-viewer">
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <div>Run tests to see results</div>
+          </div>
+        </div>
+        <div id="view-attendees-table" class="table-container" style="display:none;">
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <div>Run tests to see results</div>
+          </div>
+        </div>
+        <div class="input-group">
+          <input type="text" placeholder="Send custom request..." id="custom-attendees">
+          <button class="btn btn-primary" onclick="sendCustom('attendees')">Send</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Check-ins</h3>
+          <span class="endpoint-badge">GET /api/checkins</span>
+        </div>
+        <div class="view-toggle">
+          <button class="view-btn active" onclick="switchView('checkins', 'json')">JSON</button>
+          <button class="view-btn" onclick="switchView('checkins', 'table')">Table</button>
+        </div>
+        <div id="view-checkins-json" class="json-viewer">
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <div>Run tests to see results</div>
+          </div>
+        </div>
+        <div id="view-checkins-table" class="table-container" style="display:none;">
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <div>Run tests to see results</div>
+          </div>
+        </div>
+        <div class="input-group">
+          <input type="text" placeholder="?eventId=1" id="custom-checkins">
+          <button class="btn btn-primary" onclick="sendCustom('checkins')">Send</button>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <p class="muted">Hammer <code>/api/events</code>, <code>/api/attendees</code>, and <code>/api/checkins</code>. Includes headers, body (for POST), cURL, timing, and data table.</p>
-
-  <div class="row" style="gap:10px;margin:10px 0 18px">
-    <label class="mono">Base URL
-      <input id="base" value="http://localhost:8080" style="min-width:280px;margin-left:6px">
-    </label>
-    <button class="btn primary" onclick="runAll()">Run All</button>
-    <button class="btn" onclick="clearAll()">Clear</button>
-  </div>
-
-  <details>
-    <summary class="muted">Request options (headers & body)</summary>
-    <div class="row" style="margin:8px 0 4px"><strong>Headers</strong> <button class="btn link" onclick="addHeader()">+ add</button></div>
-    <div id="headers" class="hdrs">
-      <input placeholder="Header name" value="Accept" class="mono">
-      <input placeholder="Header value" value="application/json" class="mono">
-      <button class="btn" onclick="removeHeader(this)">Remove</button>
-    </div>
-    <div class="row" style="margin:12px 0 4px"><strong>Body (JSON for POST)</strong></div>
-    <textarea id="body" class="mono" rows="6" placeholder='{"example":"value"}' style="width:100%;resize:vertical"></textarea>
-  </details>
-
-  <div class="grid" style="margin-top:14px">
-    <!-- Events -->
-    <div class="card" id="card-events">
-      <h3>/api/events</h3>
-      <div class="row" style="gap:8px">
-        <select id="m-events">
-          <option>GET</option>
-          <option>POST</option>
-        </select>
-        <button class="btn" onclick="probeCard('events','/api/events')">Run</button>
-        <span id="meta-events" class="pill">Not run</span>
-        <span class="right kvs" id="kvs-events"></span>
-      </div>
-      <div class="tabs">
-        <button class="tab active" onclick="showTab('events','json')">JSON</button>
-        <button class="tab" onclick="showTab('events','table')">Table</button>
-        <button class="tab" onclick="showTab('events','curl')">cURL</button>
-        <span class="right row" style="gap:6px">
-          <button class="btn" onclick="copyJSON('events')">Copy JSON</button>
-          <button class="btn" onclick="downloadJSON('events')">Download</button>
-        </span>
-      </div>
-      <div id="json-events"><pre id="out-events" class="mono"></pre></div>
-      <div id="table-events" style="display:none"><div id="tbl-events"></div></div>
-      <div id="curl-events" style="display:none"><pre id="curlout-events" class="mono"></pre></div>
-    </div>
-
-    <!-- Attendees -->
-    <div class="card" id="card-attendees">
-      <h3>/api/attendees</h3>
-      <div class="row" style="gap:8px">
-        <select id="m-attendees">
-          <option>GET</option>
-          <option>POST</option>
-        </select>
-        <button class="btn" onclick="probeCard('attendees','/api/attendees')">Run</button>
-        <span id="meta-attendees" class="pill">Not run</span>
-        <span class="right kvs" id="kvs-attendees"></span>
-      </div>
-      <div class="tabs">
-        <button class="tab active" onclick="showTab('attendees','json')">JSON</button>
-        <button class="tab" onclick="showTab('attendees','table')">Table</button>
-        <button class="tab" onclick="showTab('attendees','curl')">cURL</button>
-        <span class="right row" style="gap:6px">
-          <button class="btn" onclick="copyJSON('attendees')">Copy JSON</button>
-          <button class="btn" onclick="downloadJSON('attendees')">Download</button>
-        </span>
-      </div>
-      <div id="json-attendees"><pre id="out-attendees" class="mono"></pre></div>
-      <div id="table-attendees" style="display:none"><div id="tbl-attendees"></div></div>
-      <div id="curl-attendees" style="display:none"><pre id="curlout-attendees" class="mono"></pre></div>
-    </div>
-
-    <!-- Check-ins -->
-    <div class="card" id="card-checkins">
-      <h3>/api/checkins</h3>
-      <div class="row" style="gap:8px">
-        <select id="m-checkins">
-          <option>GET</option>
-          <option>POST</option>
-        </select>
-        <button class="btn" onclick="probeCard('checkins','/api/checkins')">Run</button>
-        <span id="meta-checkins" class="pill">Not run</span>
-        <span class="right kvs" id="kvs-checkins"></span>
-      </div>
-      <div class="tabs">
-        <button class="tab active" onclick="showTab('checkins','json')">JSON</button>
-        <button class="tab" onclick="showTab('checkins','table')">Table</button>
-        <button class="tab" onclick="showTab('checkins','curl')">cURL</button>
-        <span class="right row" style="gap:6px">
-          <button class="btn" onclick="copyJSON('checkins')">Copy JSON</button>
-          <button class="btn" onclick="downloadJSON('checkins')">Download</button>
-        </span>
-      </div>
-      <div id="json-checkins"><pre id="out-checkins" class="mono"></pre></div>
-      <div id="table-checkins" style="display:none"><div id="tbl-checkins"></div></div>
-      <div id="curl-checkins" style="display:none"><pre id="curlout-checkins" class="mono"></pre></div>
-    </div>
-  </div>
-
-  <hr style="margin:22px 0;border:1px dashed var(--border)">
-  <h2>Manual check</h2>
-  <ul class="mono">
-    <li><span id="manual-events"></span></li>
-    <li><span id="manual-attendees"></span></li>
-    <li><span id="manual-checkins"></span></li>
-  </ul>
 
   <script>
+    const base = "http://localhost:8080";
     const S = id => document.getElementById(id);
-    const KB = n => (n/1024).toFixed(1)+' KB';
-    const T  = ms => `${ms.toFixed(0)} ms`;
-    let cache = { events:null, attendees:null, checkins:null };
+    const T = ms => `${ms.toFixed(0)}ms`;
+    
+    let autoRefreshInterval = null;
+    let currentViews = {events: 'json', attendees: 'json', checkins: 'json'};
+    let lastData = {events: null, attendees: null, checkins: null};
 
-    // theme
-    const themeBtn = S('themeBtn');
-    themeBtn.onclick = () => {
-      const dark = document.body.getAttribute('data-theme') === 'dark';
-      document.body.setAttribute('data-theme', dark ? 'light' : 'dark');
-      themeBtn.textContent = dark ? 'Dark mode' : 'Light mode';
-    };
-
-    // manual links reflect base
-    function syncManual(){
-      const base = S('base').value.replace(/\/+$/,'');
-      S('manual-events').textContent   = `${base}/api/events`;
-      S('manual-attendees').textContent= `${base}/api/attendees`;
-      S('manual-checkins').textContent = `${base}/api/checkins`;
+    function toggleCollapsible(id) {
+      const el = document.getElementById(id);
+      el.classList.toggle('collapsed');
     }
-    S('base').addEventListener('input', syncManual);
-    syncManual();
 
-    // headers editor
-    function gatherHeaders(){
-      const cont = S('headers');
-      const inputs = Array.from(cont.querySelectorAll('input'));
-      const headers = {};
-      for (let i=0;i<inputs.length;i+=2){
-        const k = inputs[i].value.trim();
-        const v = (inputs[i+1]||{}).value?.trim();
-        if (k) headers[k]=v??'';
+    function switchView(endpoint, view) {
+      currentViews[endpoint] = view;
+      const jsonEl = S(`view-${endpoint}-json`);
+      const tableEl = S(`view-${endpoint}-table`);
+      
+      jsonEl.style.display = view === 'json' ? 'block' : 'none';
+      tableEl.style.display = view === 'table' ? 'block' : 'none';
+      
+      document.querySelectorAll(`[onclick*="switchView('${endpoint}"]`).forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      if (lastData[endpoint]) {
+        renderData(endpoint, lastData[endpoint]);
       }
-      return headers;
     }
-    window.addHeader = function(){
-      const row = document.createElement('div'); row.className='hdrs';
-      row.innerHTML = `
-        <input placeholder="Header name" class="mono">
-        <input placeholder="Header value" class="mono">
-        <button class="btn" onclick="removeHeader(this)">Remove</button>`;
-      S('headers').parentNode.insertBefore(row, S('headers').nextSibling);
-      // move inputs into main container layout
-      const inps = row.querySelectorAll('input'); const btn = row.querySelector('button');
-      S('headers').append(inps[0], inps[1], btn);
-      row.remove();
-    };
-    window.removeHeader = function(btn){
-      const c = S('headers');
-      const idx = Array.from(c.children).indexOf(btn);
-      // buttons appear every third element (name, value, button)
-      const bIndex = Array.from(c.children).indexOf(btn);
-      const start = bIndex-2;
-      for(let i=0;i<3;i++) c.children[start].remove();
-    };
 
-    // tabs
-    function showTab(key, which){
-      ['json','table','curl'].forEach(t=>{
-        S(`${t}-${key}`).style.display = (t===which?'block':'none');
-        Array.from(document.querySelectorAll(`#card-${key} .tab`)).forEach(el=>{
-          if(el.textContent.toLowerCase()=== (t==='curl'?'curl':t)) el.classList.toggle('active', t===which);
+    function renderJSON(data) {
+      return `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    }
+
+    function renderTable(data) {
+      if (!Array.isArray(data) || data.length === 0) {
+        return '<div class="empty-state"><div class="empty-state-icon">📭</div><div>No data available</div></div>';
+      }
+      
+      const keys = Object.keys(data[0]);
+      let html = '<table><thead><tr>';
+      keys.forEach(k => html += `<th>${k}</th>`);
+      html += '</tr></thead><tbody>';
+      
+      data.slice(0, 10).forEach(row => {
+        html += '<tr>';
+        keys.forEach(k => {
+          const val = row[k];
+          const display = typeof val === 'object' ? JSON.stringify(val) : val;
+          html += `<td>${display}</td>`;
         });
+        html += '</tr>';
       });
-    }
-    window.showTab = showTab;
-
-    // helpers
-    function asTable(key, data){
-      const wrap = S(`tbl-${key}`);
-      if (!Array.isArray(data) || data.length===0){ wrap.innerHTML = `<span class="muted">No rows.</span>`; return;}
-      const cols = Array.from(new Set(data.flatMap(o=>Object.keys(o))));
-      const head = `<thead><tr>${cols.map(c=>`<th>${escape(c)}</th>`).join('')}</tr></thead>`;
-      const rows = data.map(r=>`<tr>${cols.map(c=>`<td>${escape(String(r[c] ?? ''))}</td>`).join('')}</tr>`).join('');
-      wrap.innerHTML = `<table>${head}<tbody>${rows}</tbody></table>`;
-    }
-    function escape(s){return s.replace(/[&<>"']/g, m=>({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[m]));}
-
-    // request
-    async function probeCard(key, path){
-      const base = S('base').value.replace(/\/+$/,'');
-      const url = `${base}${path}`;
-      const method = S(`m-${key}`).value;
-      const headers = gatherHeaders();
-      let body = undefined;
-      if(method==='POST'){
-        const raw = S('body').value.trim();
-        if(raw) { try{ body = JSON.stringify(JSON.parse(raw)); } catch(e){ alert('Body must be valid JSON'); return; } }
-        headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+      
+      html += '</tbody></table>';
+      if (data.length > 10) {
+        html += `<div style="padding:12px;text-align:center;color:var(--muted);font-size:0.85rem">Showing 10 of ${data.length} rows</div>`;
       }
-      // build cURL preview
-      const curl = ["curl", "-X", method, `'${url}'`]
-        .concat(Object.entries(headers).map(([k,v])=>`-H '${k}: ${v}'`))
-        .concat(body? [`-d '${body}'`] : [])
-        .join(' ');
-      S(`curlout-${key}`).textContent = curl;
-
-      const t0 = performance.now();
-      let ok=false, status=0, json=null, size=0, err=null;
-      try{
-        const res = await fetch(url, {method, headers, body});
-        status = res.status; ok = res.ok;
-        const text = await res.text();
-        size = text.length;
-        try{ json = text ? JSON.parse(text) : null; } catch(parseErr){ err = `Invalid JSON response: ${parseErr}`; }
-      }catch(e){ err=e; }
-      const t1 = performance.now();
-
-      // meta and summary
-      S(`meta-${key}`).innerHTML = ok ? `<span class="ok">OK</span> • ${status} • ${T(t1-t0)}`
-                                      : `<span class="bad">FAIL</span> • ${status||'no response'} • ${T(t1-t0)}`;
-      S(`kvs-${key}`).innerHTML = `<span>URL: <span class="mono">${escape(url)}</span></span><span>Size: ${KB(size)}</span>`;
-
-      // outputs
-      S(`out-${key}`).textContent = (err ? `ERROR: ${err}\n\n` : "") + (json!=null ? JSON.stringify(json, null, 2) : '—');
-      asTable(key, Array.isArray(json) ? json : []);
-
-      cache[key] = json;
-      bumpSummary();
-    }
-    window.probeCard = probeCard;
-
-    function bumpSummary(){
-      const keys = ['events','attendees','checkins'];
-      const green = keys.every(k => S(`meta-${k}`).textContent.includes('OK'));
-      S('summary').textContent = green ? 'All green' : 'Ran';
-      S('summary').style.background = green ? '#e7f8eb' : '#ffe';
+      return html;
     }
 
-    async function runAll(){
-      S('summary').textContent = 'Running…'; S('summary').style.background = '#ffe';
-      await probeCard('events','/api/events');
-      await probeCard('attendees','/api/attendees');
-      await probeCard('checkins','/api/checkins');
-      bumpSummary();
+    function renderData(endpoint, data) {
+      const view = currentViews[endpoint];
+      const container = S(`view-${endpoint}-${view}`);
+      
+      if (view === 'json') {
+        container.innerHTML = renderJSON(data);
+      } else {
+        container.innerHTML = renderTable(data);
+      }
     }
-    window.runAll = runAll;
 
-    function clearAll(){
-      ['events','attendees','checkins'].forEach(k=>{
-        S(`meta-${k}`).textContent='Not run';
-        S(`kvs-${k}`).innerHTML='';
-        S(`out-${k}`).textContent='';
-        S(`tbl-${k}`).innerHTML='';
-        S(`curlout-${k}`).textContent='';
+    function mark(endpoint, ok, time) {
+      const el = S(`chk-${endpoint}`);
+      const timeEl = S(`time-${endpoint}`);
+      
+      if (ok) {
+        el.className = 'checklist-item success';
+        el.querySelector('.check-icon').textContent = '✅';
+      } else {
+        el.className = 'checklist-item error';
+        el.querySelector('.check-icon').textContent = '❌';
+      }
+      
+      timeEl.textContent = time;
+    }
+
+    function clearChecklist() {
+      ['events', 'attendees', 'checkins'].forEach(k => {
+        const el = S(`chk-${k}`);
+        el.className = 'checklist-item';
+        el.querySelector('.check-icon').textContent = '⬜';
+        S(`time-${k}`).textContent = '';
+        S(`view-${k}-json`).innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><div>Run tests to see results</div></div>';
+        S(`view-${k}-table`).innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><div>Run tests to see results</div></div>';
+        lastData[k] = null;
       });
-      cache = {events:null,attendees:null,checkins:null};
-      S('summary').textContent='Idle'; S('summary').style.background='';
+      const badge = S('summary');
+      badge.textContent = 'Idle';
+      badge.className = 'status-badge status-idle';
     }
-    window.clearAll = clearAll;
 
-    function copyJSON(key){
-      const txt = S(`out-${key}`).textContent||'';
-      navigator.clipboard.writeText(txt);
+    async function probe(name, path) {
+      const start = performance.now();
+      let ok = false, data = null;
+      
+      try {
+        const res = await fetch(base + path);
+        ok = res.ok;
+        data = await res.json();
+      } catch (e) {
+        ok = false;
+        data = { error: String(e) };
+      }
+      
+      const end = performance.now();
+      const dur = T(end - start);
+      
+      mark(name, ok, dur);
+      lastData[name] = data;
+      renderData(name, data);
+      
+      return ok;
     }
-    function downloadJSON(key){
-      const data = cache[key] ?? {};
-      const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-      a.download = `${key}.json`; a.click(); URL.revokeObjectURL(a.href);
+
+    async function waitForSeed(timeoutMs = 8000) {
+      const start = Date.now();
+      while (Date.now() - start < timeoutMs) {
+        try {
+          const res = await fetch(base + "/api/events");
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) return true;
+          }
+        } catch {}
+        await new Promise(r => setTimeout(r, 500));
+      }
+      return false;
     }
-    window.copyJSON = copyJSON;
-    window.downloadJSON = downloadJSON;
+
+    async function runAll() {
+      const badge = S('summary');
+      badge.textContent = 'Waiting for seed data...';
+      badge.className = 'status-badge status-running';
+      
+      const seeded = await waitForSeed();
+      if (!seeded) {
+        badge.textContent = 'Seed timeout (8s)';
+        badge.className = 'status-badge status-error';
+        return;
+      }
+      
+      badge.textContent = 'Running tests...';
+      
+      const e = await probe('events', '/api/events');
+      const a = await probe('attendees', '/api/attendees');
+      const c = await probe('checkins', '/api/checkins?eventId=1');
+      
+      const all = e && a && c;
+      badge.textContent = all ? '✅ All tests passed' : '⚠️ Some tests failed';
+      badge.className = all ? 'status-badge status-success' : 'status-badge status-error';
+    }
+
+    async function sendCustom(endpoint) {
+      const input = S(`custom-${endpoint}`);
+      const query = input.value.trim();
+      const path = query.startsWith('?') || query.startsWith('/') 
+        ? `/api/${endpoint}${query}` 
+        : `/api/${endpoint}${query ? '?' + query : ''}`;
+      
+      await probe(endpoint, path);
+    }
+
+    function toggleAutoRefresh() {
+      const icon = S('autoRefreshIcon');
+      const text = S('autoRefreshText');
+      
+      if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+        autoRefreshInterval = null;
+        icon.textContent = '⏸';
+        text.textContent = 'Auto-refresh';
+      } else {
+        autoRefreshInterval = setInterval(runAll, 5000);
+        icon.textContent = '⏵';
+        text.textContent = 'Auto-refresh (5s)';
+        runAll();
+      }
+    }
+
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('keypress', e => {
+        if (e.key === 'Enter') {
+          const id = input.id.replace('custom-', '');
+          sendCustom(id);
+        }
+      });
+    });
   </script>
 </body>
 </html>
