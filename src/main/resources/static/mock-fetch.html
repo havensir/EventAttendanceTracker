@@ -113,7 +113,6 @@
       document.getElementById('out').innerHTML = "";
       for (const ep of endpoints) {
         // Run sequentially to keep output ordered
-        // eslint-disable-next-line no-await-in-loop
         await testEndpoint(ep);
       }
     });
