@@ -1,4 +1,83 @@
-# Maven / Java build files
+# ==================================================
+# OS files
+# ==================================================
+.DS_Store
+Thumbs.db
+
+# ==================================================
+# IDEs & Editors
+# ==================================================
+# VS Code
+.vscode/
+.history/
+*.code-workspace
+
+# IntelliJ / JetBrains
+.idea/
+*.iml
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# ==================================================
+# Maven / Build
+# ==================================================
 target/
+*.log
 *.class
-*.lst
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Maven Wrapper
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+mvnw
+mvnw.cmd
+
+# ==================================================
+# Node or Frontend assets (if you add them later)
+# ==================================================
+node_modules/
+dist/
+build/
+
+# ==================================================
+# Environment & Temporary files
+# ==================================================
+*.env
+*.local
+*.tmp
+*.swp
+*.bak
+*.orig
+
+# ==================================================
+# OS / Misc cache
+# ==================================================
+*.pid
+*.seed
+*.cache
+*.log*
+*.rej
+
+# ==================================================
+# Custom project ignores
+# ==================================================
+# Java output directories
+src/main/resources/static/*.map
+src/main/resources/static/*.tmp
+# Local testing JSON / mock data
+src/main/resources/static/*.json
+
+# ==================================================
+# Keep docs & config under version control
+# ==================================================
+!docs/
+!src/main/resources/application.properties
