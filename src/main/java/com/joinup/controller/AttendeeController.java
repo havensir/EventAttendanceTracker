@@ -1,20 +1,17 @@
 package com.joinup.controller;
 
-import org.springframework.http.ResponseEntity;
+import com.joinup.mock.MockData;
+import com.joinup.model.Attendee;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+/** Milestone 1: simple GET that returns mock attendees. */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/attendees")
 public class AttendeeController {
-
-    // TODO: connect to IAttendeeService once it's implemented
-    @GetMapping("/events/{eventId}/attendees")
-    public ResponseEntity<String> listAttendees(@PathVariable String eventId) {
-        return ResponseEntity.status(501).body("TODO: List attendees for event " + eventId);
-    }
-
-    @PostMapping("/attendees")
-    public ResponseEntity<String> registerAttendee() {
-        return ResponseEntity.status(501).body("TODO: Register a new attendee");
+    @GetMapping
+    public List<Attendee> list() {
+        return MockData.attendees();
     }
 }

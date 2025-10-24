@@ -1,20 +1,17 @@
 package com.joinup.controller;
 
-import org.springframework.http.ResponseEntity;
+import com.joinup.mock.MockData;
+import com.joinup.model.CheckIn;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+/** Milestone 1: simple GET that returns mock check-ins. */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/checkins")
 public class CheckInController {
-
-    // TODO: connect to ICheckInService once it's implemented
-    @PostMapping("/checkins")
-    public ResponseEntity<String> checkIn() {
-        return ResponseEntity.status(501).body("TODO: Check in an attendee");
-    }
-
-    @GetMapping("/events/{eventId}/stats")
-    public ResponseEntity<String> getEventStats(@PathVariable String eventId) {
-        return ResponseEntity.status(501).body("TODO: Get stats for event " + eventId);
+    @GetMapping
+    public List<CheckIn> list() {
+        return MockData.checkIns();
     }
 }
