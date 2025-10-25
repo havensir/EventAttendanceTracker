@@ -1,6 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.joinup</groupId>
@@ -21,19 +22,26 @@
   </properties>
 
   <dependencies>
-    <!-- Web + JSON -->
+    <!-- Core Spring Web + REST -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
-    <!-- UI templating (registers Thymeleaf view resolver for /templates/*.html) -->
+    <!-- Thymeleaf templating -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
     </dependency>
 
-    <!-- (Optional but handy) Live reload during dev -->
+    <!-- PDF generation -->
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>pdfbox</artifactId>
+      <version>2.0.30</version>
+    </dependency>
+
+    <!-- Optional runtime reload for development -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-devtools</artifactId>
@@ -41,7 +49,7 @@
       <optional>true</optional>
     </dependency>
 
-    <!-- Tests (JUnit 5, MockMvc, Mockito) -->
+    <!-- Testing stack: JUnit 5, MockMvc, Mockito -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -51,13 +59,13 @@
 
   <build>
     <plugins>
-      <!-- Spring Boot plugin for running and packaging -->
+      <!-- Spring Boot plugin for packaging and running -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
 
-      <!-- Surefire: Run *Test.java and *Spec.java -->
+      <!-- Surefire for unit tests -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -75,7 +83,7 @@
 
   <reporting>
     <plugins>
-      <!-- Surefire Report Plugin: generate HTML reports -->
+      <!-- Surefire report generation -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>

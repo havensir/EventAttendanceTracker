@@ -10,7 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/ui/events")
@@ -31,7 +32,7 @@ public class EventsController {
         model.addAttribute("events", all);
         model.addAttribute("active", "events");
         model.addAttribute("hero", "Your city, your events.");
-        return "events"; // your list template
+        return "events"; // list template
     }
 
     /** Event details page showing metadata + attendee list + RSVP form. */
@@ -114,8 +115,12 @@ public class EventsController {
         String me = session != null ? (String) session.getAttribute("userEmail") : null;
         List<Attendee> mine = (me == null || me.isBlank()) ? List.of() : attendees.listByEmail(me);
 
+        List<Event> all = events.listEvents();
+        Map<String, Event> eventsById = all.stream().collect(Collectors.toMap(Event::getId, e -> e));
+
         model.addAttribute("myTickets", mine);
-        model.addAttribute("events", events.listEvents()); // for resolving event names
+        model.addAttribute("events", all);           // optional (lists, etc.)
+        model.addAttribute("eventsById", eventsById); // used by tickets.html to resolve names/dates
         model.addAttribute("active", "tickets");
         model.addAttribute("hero", "Your Tickets");
         return "tickets";

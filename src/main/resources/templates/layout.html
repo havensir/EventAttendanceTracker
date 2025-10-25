@@ -6,6 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title th:text="${appName} ?: 'JoinUp'">JoinUp</title>
 
+  <!-- Favicons / PWA -->
+  <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon.png}">
+  <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32.png}">
+  <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16.png}">
+  <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+  <link rel="manifest" th:href="@{/site.webmanifest}">
+  <!-- Optional extra sizes -->
+  <link rel="icon" sizes="192x192" th:href="@{/android-chrome-192x192.png}">
+  <link rel="icon" sizes="512x512" th:href="@{/android-chrome-512x512.png}">
+  <meta name="theme-color" content="#1f3f2f"/>
+
   <style>
     :root{
       --bg:#ffffff; --surface:#f5f5f5; --ink:#101010; --muted:#616161; --line:#e6e6e6;
@@ -100,7 +111,7 @@
         </a>
       </nav>
 
-      <!-- CTA (pushes following items to bottom via margin-top:auto) -->
+      <!-- CTA -->
       <div class="ctaCard">
         <strong>Ready to host your own event?</strong>
         <p>The Host Hub is your starting point.</p>
@@ -110,7 +121,7 @@
       <!-- Brand -->
       <div class="brand">Join<span style="opacity:.6">Up</span>.</div>
 
-      <!-- Bottom logout button -->
+      <!-- Bottom logout -->
       <div class="side-bottom">
         <form th:action="@{/logout}" method="post" style="margin:0">
           <button class="btn btn-ghost" type="submit" title="Sign out from this device">Sign out</button>
@@ -144,13 +155,9 @@
           e.stopPropagation();
           toggleMenu();
         });
-
-        // Click outside closes
         document.addEventListener('click', (e) => {
           if (!e.target.closest('.profile')) closeMenu();
         });
-
-        // ESC closes
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape') closeMenu();
         });
