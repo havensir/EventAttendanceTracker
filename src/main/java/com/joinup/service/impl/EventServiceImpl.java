@@ -26,6 +26,11 @@ public class EventServiceImpl implements IEventService {
         return event;
     }
 
+    @Override
+    public Event getEventById(String id) {
+        return events.get(id);
+    }
+
     // convenience for seeder/tests
     public boolean isEmpty() {
         return events.isEmpty();
