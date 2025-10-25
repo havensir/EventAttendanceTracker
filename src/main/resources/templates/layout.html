@@ -12,7 +12,6 @@
   <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16.png}">
   <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
   <link rel="manifest" th:href="@{/site.webmanifest}">
-  <!-- Optional extra sizes -->
   <link rel="icon" sizes="192x192" th:href="@{/android-chrome-192x192.png}">
   <link rel="icon" sizes="512x512" th:href="@{/android-chrome-512x512.png}">
   <meta name="theme-color" content="#1f3f2f"/>
@@ -21,6 +20,9 @@
     :root{
       --bg:#ffffff; --surface:#f5f5f5; --ink:#101010; --muted:#616161; --line:#e6e6e6;
       --brand:#1f3f2f; --cta:#efe5b6; --chip:#eceae4; --btn:#3b2a17; --btn-text:#fff; --accent:#1a5d3c; --radius:16px;
+      --nav-size:18px; /* bigger nav text */
+      --icon: currentColor;
+      --focus: #1a5d3c33;
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
@@ -31,14 +33,26 @@
     .avatar{width:44px;height:44px;border-radius:12px;background:#1f6d46;color:#fff;display:grid;place-items:center;font-weight:700;cursor:pointer}
     .name{font-weight:700}
     .org{color:var(--muted);font-size:12px;margin-top:2px}
-    .nav{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-    .nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-weight:600}
+
+    /* Nav: larger targets, clearer visuals */
+    .nav{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .nav a{
+      display:flex;align-items:center;gap:12px;
+      padding:12px 14px;border-radius:12px;font-weight:700;
+      font-size:var(--nav-size); line-height:1;
+      min-height:48px; /* larger tap target */
+      letter-spacing:.2px;
+    }
     .nav a.active, .nav a:hover{background:#eef1ed}
-    .nav .icon{width:22px;text-align:center;opacity:.75}
+    .icon{display:inline-grid;place-items:center;width:26px;height:26px;flex:0 0 26px;opacity:.9}
+    .icon svg{width:22px;height:22px;stroke:var(--icon);}
+
     .ctaCard{margin-top:auto;background:var(--chip);border:1px solid var(--line);border-radius:14px;padding:14px}
     .ctaCard p{margin:0 0 10px;color:var(--muted);font-size:13px}
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;background:var(--btn);color:var(--btn-text);border-radius:12px;font-weight:700;border:none;cursor:pointer}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;background:var(--btn);color:var(--btn-text);border-radius:12px;font-weight:800;border:none;cursor:pointer}
     .btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+    .btn .icon svg{stroke:#fff}
+
     .brand{font-size:32px;margin-top:22px;font-weight:800;opacity:.85}
     .main{display:flex;flex-direction:column}
     .hero{background:var(--brand);color:#fff;padding:38px 46px;border-bottom:1px solid var(--line)}
@@ -57,17 +71,85 @@
     .menu a:hover, .menu form button:hover{background:#f7f7f7}
     .menu .sep{height:1px;background:var(--line);margin:4px 0}
 
+    /* Focus styles (keyboard & a11y) */
+    :where(a,button,[role="button"],.avatar):focus-visible{
+      outline:3px solid var(--focus);
+      outline-offset:2px;
+      border-radius:12px;
+    }
+
     /* Sidebar bottom log out */
     .side-bottom{margin-top:12px;display:flex;flex-direction:column;gap:10px}
-    @media (max-width:980px){.page{grid-template-columns:1fr}.side{border-right:none;border-bottom:1px solid var(--line)}}
+
+    @media (max-width:980px){
+      .page{grid-template-columns:1fr}
+      .side{border-right:none;border-bottom:1px solid var(--line)}
+    }
+
+    @media (prefers-reduced-motion:no-preference){
+      .nav a{transition:background .15s ease, transform .05s ease}
+      .nav a:active{transform:translateY(1px)}
+      .btn{transition:opacity .15s ease, transform .05s ease}
+      .btn:active{transform:translateY(1px)}
+    }
   </style>
 </head>
 <body>
+  <!-- SVG sprite: accessible, no external requests -->
+  <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+    <defs>
+      <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 10.5L12 3l9 7.5"></path>
+        <path d="M5 10.5V21h14V10.5"></path>
+        <path d="M10 21v-6h4v6"></path>
+      </symbol>
+      <symbol id="icon-events" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+        <path d="M16 2v4M8 2v4M3 10h18"></path>
+      </symbol>
+      <symbol id="icon-ticket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2z"></path>
+        <path d="M13 5v14" opacity=".35"></path>
+        <path d="M10 9h2m-2 3h2m-2 3h2" opacity=".35"></path>
+      </symbol>
+      <symbol id="icon-test" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 3h6"></path>
+        <path d="M10 3v5l-4.5 8.5A3 3 0 0 0 8.2 21h7.6a3 3 0 0 0 2.7-4.5L14 8V3"></path>
+      </symbol>
+      <symbol id="icon-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="10" cy="8" r="4"></circle>
+        <path d="M20 21v-2a4 4 0 0 0-3-3.87"></path>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+      </symbol>
+      <symbol id="icon-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 20h9"></path>
+        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path>
+      </symbol>
+      <symbol id="icon-exit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 12h10"></path>
+        <path d="M15 7l5 5-5 5"></path>
+        <path d="M4 4h7v16H4z"></path>
+      </symbol>
+      <symbol id="icon-crown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 8l4 3 5-6 5 6 4-3 0 9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <path d="M5 19h14"></path>
+      </symbol>
+    </defs>
+  </svg>
+
   <div class="page">
     <aside class="side">
       <!-- Profile -->
       <div class="profile">
-        <!-- Initials from session first+last -->
         <div class="avatar" id="avatarBtn"
              th:text="${((session.userFirst!=null? #strings.substring(session.userFirst,0,1) : 'U') +
                         (session.userLast !=null? #strings.substring(session.userLast ,0,1) : 'U')).toUpperCase()}">JU</div>
@@ -87,27 +169,58 @@
             <div class="mh-sub"  th:text="${session.userEmail} ?: 'jane@example.com'">jane@example.com</div>
           </div>
           <a th:href="@{/profile}">
-            <span>✏️</span><span>Edit profile</span>
+            <span class="icon" aria-hidden="true">
+              <svg><use href="#icon-edit" xlink:href="#icon-edit"></use></svg>
+            </span>
+            <span>Edit profile</span>
           </a>
           <div class="sep"></div>
           <form th:action="@{/logout}" method="post" style="margin:0">
-            <button type="submit"><span>🚪</span><span>Sign out</span></button>
+            <button type="submit">
+              <span class="icon" aria-hidden="true">
+                <svg><use href="#icon-exit" xlink:href="#icon-exit"></use></svg>
+              </span>
+              <span>Sign out</span>
+            </button>
           </form>
         </div>
       </div>
 
       <!-- Nav -->
-      <nav class="nav">
-        <a th:classappend="${active}=='home' ? ' active'" th:href="@{/}"><span class="icon">🏠</span>Home</a>
-        <a th:classappend="${active}=='events' ? ' active'" th:href="@{/ui/events}"><span class="icon">✉️</span>Events</a>
-        <a th:classappend="${active}=='tickets' ? ' active'" th:href="@{/ui/tickets}"><span class="icon">🎟️</span>Tickets</a>
-        <a th:classappend="${active}=='tester' ? ' active'" th:href="@{/ui/api-tester}"><span class="icon">🧪</span>API Tester</a>
+      <nav class="nav" aria-label="Primary">
+        <a th:classappend="${active}=='home' ? ' active'" th:href="@{/}">
+          <span class="icon" aria-hidden="true">
+            <svg><use href="#icon-home" xlink:href="#icon-home"></use></svg>
+          </span>
+          <span>Home</span>
+        </a>
+        <a th:classappend="${active}=='events' ? ' active'" th:href="@{/ui/events}">
+          <span class="icon" aria-hidden="true">
+            <svg><use href="#icon-events" xlink:href="#icon-events"></use></svg>
+          </span>
+          <span>Events</span>
+        </a>
+        <a th:classappend="${active}=='tickets' ? ' active'" th:href="@{/ui/tickets}">
+          <span class="icon" aria-hidden="true">
+            <svg><use href="#icon-ticket" xlink:href="#icon-ticket"></use></svg>
+          </span>
+          <span>Tickets</span>
+        </a>
+        <a th:classappend="${active}=='tester' ? ' active'" th:href="@{/ui/api-tester}">
+          <span class="icon" aria-hidden="true">
+            <svg><use href="#icon-test" xlink:href="#icon-test"></use></svg>
+          </span>
+          <span>API Tester</span>
+        </a>
 
         <!-- SUPER_ADMIN only -->
         <a th:if="${session.userRole}=='SUPER_ADMIN'"
            th:classappend="${active}=='users' ? ' active'"
            th:href="@{/users}">
-          <span class="icon">👥</span>Users
+          <span class="icon" aria-hidden="true">
+            <svg><use href="#icon-users" xlink:href="#icon-users"></use></svg>
+          </span>
+          <span>Users</span>
         </a>
       </nav>
 
@@ -115,7 +228,12 @@
       <div class="ctaCard">
         <strong>Ready to host your own event?</strong>
         <p>The Host Hub is your starting point.</p>
-        <button class="btn" type="button">👑 Host An Event</button>
+        <button class="btn" type="button">
+          <span class="icon" aria-hidden="true">
+            <svg><use href="#icon-crown" xlink:href="#icon-crown"></use></svg>
+          </span>
+          <span>Host An Event</span>
+        </button>
       </div>
 
       <!-- Brand -->
@@ -124,7 +242,12 @@
       <!-- Bottom logout -->
       <div class="side-bottom">
         <form th:action="@{/logout}" method="post" style="margin:0">
-          <button class="btn btn-ghost" type="submit" title="Sign out from this device">Sign out</button>
+          <button class="btn btn-ghost" type="submit" title="Sign out from this device">
+            <span class="icon" aria-hidden="true">
+              <svg><use href="#icon-exit" xlink:href="#icon-exit"></use></svg>
+            </span>
+            <span>Sign out</span>
+          </button>
         </form>
       </div>
     </aside>
