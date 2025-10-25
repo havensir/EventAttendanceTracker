@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: shell(
+        'events',
+        ${#strings.concat('Event · ', event.name)},
+        ~{::content}
+      )}">
+
+  <th:block th:fragment="content">
+    <style>
+      .container{ max-width: 1200px; margin: 0 auto; padding: 40px 24px; }
+      .wrap{ display:grid; grid-template-columns: 1.5fr 1fr; gap:32px; }
+      .card{ background:#fff; border:1px solid #e5e7eb; border-radius:16px; padding:32px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+      .title{ font-weight:900; font-size:36px; margin:0 0 16px; line-height: 1.2; color: #111; }
+      .muted{ color:#6b7280; line-height: 1.6; }
+      .heroimg{ height:280px; border-radius:12px; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); display:grid; place-items:center; margin-bottom:24px; position: relative; overflow: hidden; }
+      .heroimg::after{ content:''; position:absolute; inset:0; background: url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1" fill="white" fill-opacity="0.1"/></svg>') repeat; }
+      .heroimg svg{ opacity:.3; position: relative; z-index: 1; }
+      
+      .meta-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap:16px; margin:20px 0 24px; }
+      .meta-item{ display:flex; align-items:center; gap:12px; padding: 16px; background:#f9fafb; border-radius:10px; border: 1px solid #f3f4f6; }
+      .meta-icon{ width:40px; height:40px; border-radius:10px; background:#fff; display:grid; place-items:center; font-size:20px; flex-shrink: 0; }
+      .meta-content{ display:flex; flex-direction:column; gap:2px; min-width: 0; }
+      .meta-label{ font-size:12px; color:#9ca3af; font-weight:600; text-transform:uppercase; letter-spacing: 0.5px; }
+      .meta-value{ font-weight:700; color:#111; font-size:15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      
+      .section-title{ font-weight:800; font-size:20px; margin:32px 0 16px; color:#111; display:flex; align-items:center; gap:8px; }
+      .divider{ height:1px; background:#e5e7eb; margin:24px 0; }
+      
+      .btn{ padding:14px 20px; border-radius:10px; font-weight:700; border:none; cursor:pointer; transition: all 0.2s; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+      .btn.primary{ background:#3b2a17; color:#fff; }
+      .btn.primary:hover{ background:#2d2013; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59,42,23,0.3); }
+      .btn.ghost{ background:#fff; color:#111; border:2px solid #e5e7eb; }
+      .btn.ghost:hover{ border-color:#d1d5db; background:#f9fafb; }
+      
+      .toast{ position:fixed; right:24px; top:24px; background:#10b981; color:#fff; padding:16px 20px; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,.15); font-weight:600; display:flex; align-items:center; gap:10px; z-index: 1000; animation: slideIn 0.3s ease; }
+      @keyframes slideIn{ from{ transform: translateX(400px); opacity:0; } to{ transform: translateX(0); opacity:1; } }
+      
+      table{ width:100%; border-collapse:collapse; margin-top:8px; }
+      thead{ background:#f9fafb; }
+      th{ padding:12px 16px; text-align:left; font-weight:700; color:#374151; font-size:13px; text-transform:uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e5e7eb; }
+      td{ padding:14px 16px; border-bottom:1px solid #f3f4f6; color:#111; }
+      tbody tr:hover{ background:#f9fafb; }
+      tbody tr:last-child td{ border-bottom: none; }
+      
+      .empty-state{ text-align:center; padding:48px 24px; color:#9ca3af; }
+      .empty-state-icon{ font-size:48px; margin-bottom:16px; opacity:0.5; }
+      
+      .form-group{ margin-bottom:20px; }
+      label{ display:block; font-weight:700; margin-bottom:8px; color:#374151; font-size:14px; }
+      input{ width:100%; padding:14px 16px; border:2px solid #e5e7eb; border-radius:10px; font-size:15px; transition: all 0.2s; box-sizing: border-box; }
+      input:focus{ outline:none; border-color:#3b2a17; box-shadow: 0 0 0 3px rgba(59,42,23,0.1); }
+      
+      .form-actions{ display:flex; gap:12px; margin-top:24px; }
+      .form-actions .btn{ flex:1; }
+      
+      .consent-text{ margin-top:20px; padding:16px; background:#f9fafb; border-radius:10px; font-size:13px; color:#6b7280; line-height:1.5; border: 1px solid #f3f4f6; }
+      
+      .already-registered{ background:#fef3c7; border: 1px solid #fde68a; color:#92400e; padding:16px; border-radius:10px; margin-bottom:20px; font-weight:600; display:flex; align-items:center; gap:10px; }
+      
+      @media (max-width:980px){ 
+        .wrap{ grid-template-columns:1fr; }
+        .meta-grid{ grid-template-columns: 1fr; }
+        .container{ padding: 24px 16px; }
+      }
+    </style>
+
+    <div th:if="${param.rsvped}" class="toast">
+      <span>✓</span> You're on the list! 🎉
+    </div>
+
+    <div class="container">
+      <div class="wrap">
+        <!-- Left: Event Details & Attendees -->
+        <section class="card">
+          <div class="heroimg" aria-hidden="true">
+            <svg width="100" height="70" viewBox="0 0 60 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="60" height="42" rx="6" fill="white" fill-opacity="0.2"/>
+              <path d="M10 30l9-11 8 9 7-7 16 16H10z" fill="white" fill-opacity="0.3"/>
+              <circle cx="19" cy="16" r="4" fill="white" fill-opacity="0.4"/>
+            </svg>
+          </div>
+
+          <h1 class="title" th:text="${event.name}">Event Name</h1>
+          
+          <div class="meta-grid">
+            <div class="meta-item">
+              <div class="meta-icon">📍</div>
+              <div class="meta-content">
+                <div class="meta-label">Location</div>
+                <div class="meta-value" th:text="${event.location}">Student Center Atrium</div>
+              </div>
+            </div>
+            
+            <div class="meta-item">
+              <div class="meta-icon">📅</div>
+              <div class="meta-content">
+                <div class="meta-label">Date & Time</div>
+                <div class="meta-value" th:text="${event.dateTime}">2025-11-05T18:00</div>
+              </div>
+            </div>
+            
+            <div class="meta-item">
+              <div class="meta-icon">👥</div>
+              <div class="meta-content">
+                <div class="meta-label">Attending</div>
+                <div class="meta-value"><span th:text="${#lists.size(attendees)}">0</span> registered</div>
+              </div>
+            </div>
+            
+            <div class="meta-item">
+              <div class="meta-icon">🎟️</div>
+              <div class="meta-content">
+                <div class="meta-label">Capacity</div>
+                <div class="meta-value"><span th:text="${event.capacity}">150</span> spots</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="muted">
+            Join us for an amazing event! This is a great opportunity to connect with fellow attendees and enjoy a memorable experience. Add a description field to your Event model to customize this message.
+          </p>
+
+          <div class="divider"></div>
+
+          <h3 class="section-title">
+            <span>👥</span> Attendee List
+          </h3>
+          
+          <div th:if="${#lists.isEmpty(attendees)}" class="empty-state">
+            <div class="empty-state-icon">🎫</div>
+            <div style="font-weight:600; color:#6b7280; font-size:16px;">No RSVPs yet</div>
+            <div style="color:#9ca3af; font-size:14px; margin-top:4px;">Be the first to register!</div>
+          </div>
+          
+          <div th:if="${!#lists.isEmpty(attendees)}">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="a : ${attendees}">
+                  <td th:text="${a.firstName + ' ' + a.lastName}">Name</td>
+                  <td th:text="${a.email}">email</td>
+                  <td th:text="${a.phone}">phone</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Right: RSVP Form -->
+        <aside class="card">
+          <h2 style="margin:0 0 8px; font-size:28px; font-weight:900; color:#111;">RSVP Now</h2>
+          <p class="muted" style="margin:0 0 24px;">Register for this event and secure your spot.</p>
+
+          <div th:if="${alreadyRsvped}" class="already-registered">
+            <span>✓</span> You're already registered with this email.
+          </div>
+
+          <form th:if="${!alreadyRsvped}" th:action="@{|/ui/events/${event.id}/rsvp|}" method="post">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input id="firstName" name="firstName" required th:value="${session.userFirst} ?: ''" placeholder="Enter your first name"/>
+            </div>
+            
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input id="lastName" name="lastName" required th:value="${session.userLast} ?: ''" placeholder="Enter your last name"/>
+            </div>
+            
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input id="email" name="email" type="email" required th:value="${session.userEmail} ?: ''" placeholder="your.email@example.com"/>
+            </div>
+            
+            <div class="form-group">
+              <label for="phone">Phone Number (Optional)</label>
+              <input id="phone" name="phone" th:value="${session.userPhone} ?: ''" placeholder="(123) 456-7890"/>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn primary">
+                <span>✓</span> Confirm RSVP
+              </button>
+            </div>
+            
+            <div class="form-actions">
+              <a th:href="@{/ui/events}" class="btn ghost">← Back to Events</a>
+            </div>
+          </form>
+
+          <div th:if="${alreadyRsvped}">
+            <div class="form-actions">
+              <a th:href="@{/ui/events/my}" class="btn primary">View My Tickets</a>
+            </div>
+            <div class="form-actions">
+              <a th:href="@{/ui/events}" class="btn ghost">← Back to Events</a>
+            </div>
+          </div>
+
+          <div class="consent-text">
+            <strong>📧 Event Communications</strong><br/>
+            By registering, you consent to receive event updates, reminders, and day-of communications.
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <script>
+      const t = document.querySelector('.toast');
+      if (t) setTimeout(()=> t.remove(), 3000);
+    </script>
+  </th:block>
+</html>

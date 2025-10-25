@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: shell(
+        'tickets',
+        ${'Your Tickets'},
+        ~{::content}
+      )}">
+
+  <th:block th:fragment="content">
+    <style>
+      .wrap{ margin: 0 35px 24px; }
+      .card{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:22px; }
+      .row{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; padding:12px 0; border-bottom:1px solid #eee; }
+      .head{ font-weight:800; color:#444; }
+      @media (max-width:980px){ .row{ grid-template-columns:1fr; } }
+    </style>
+
+    <div class="wrap">
+      <div class="card">
+        <h2 style="margin:0 0 10px;">Your Tickets</h2>
+        <div class="muted" th:if="${#lists.isEmpty(myTickets)}">You haven’t RSVP’d to any events yet.</div>
+
+        <div th:if="${!#lists.isEmpty(myTickets)}">
+          <div class="row head">
+            <div>Event</div><div>When</div><div>Venue</div>
+          </div>
+          <div class="row" th:each="t : ${myTickets}">
+            <div>
+              <a th:href="@{|/ui/events/${t.eventId}|}"
+                 th:text="${#lists.contains(events, null) ? 'Event' : ${events.^[#this.id == t.eventId][0].name}}">Event</a>
+            </div>
+            <div th:text="${events.^[#this.id == t.eventId][0].dateTime}">Date/Time</div>
+            <div th:text="${events.^[#this.id == t.eventId][0].location}">Location</div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;">
+          <a th:href="@{/ui/events}" class="btn btn-ghost" style="background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:800;">Browse Events</a>
+        </div>
+      </div>
+    </div>
+  </th:block>
+</html>

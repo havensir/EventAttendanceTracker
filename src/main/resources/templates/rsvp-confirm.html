@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout :: shell(
+    'events',
+    ${hero} ?: 'RSVP Confirmed',
+    ~{::content}
+  )}">
+  <th:block th:fragment="content">
+    <style>
+      .container{ max-width: 1200px; margin: 0 auto; padding: 60px 32px; }
+      
+      .success-banner{ background: #fff; border:2px solid #111; border-radius:16px; padding:48px 40px; 
+                       text-align:center; margin-bottom:40px; }
+      .success-title{ font-size:42px; font-weight:900; margin:0 0 12px; color:#111; letter-spacing:-1px; }
+      .success-subtitle{ font-size:17px; color:#616161; font-weight:400; max-width:600px; margin:0 auto; line-height:1.6; }
+      
+      .confirmation-card{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:48px; }
+      
+      .callout-box{ background:#fafafa; border-left:4px solid #111; padding:24px 28px; 
+                    margin-bottom:40px; }
+      .callout-text{ font-size:16px; font-weight:700; color:#111; margin:0 0 6px; }
+      .callout-subtext{ font-size:15px; color:#616161; margin:0; line-height:1.5; }
+      
+      .details-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:32px; margin-bottom:40px; }
+      .details-section{ background:#fafafa; padding:32px; border-radius:12px; border:1px solid #e5e7eb; }
+      .section-header{ font-size:11px; font-weight:900; color:#111; text-transform:uppercase; letter-spacing:2px; 
+                       margin:0 0 24px; padding-bottom:12px; border-bottom:2px solid #111; }
+      
+      .detail-item{ margin-bottom:20px; }
+      .detail-item:last-child{ margin-bottom:0; }
+      .detail-label{ font-size:11px; font-weight:800; color:#888; margin-bottom:6px; text-transform:uppercase; 
+                     letter-spacing:1px; }
+      .detail-value{ font-size:16px; font-weight:600; color:#111; line-height:1.4; }
+      
+      .ticket-code-highlight{ background:#111; border-radius:10px; padding:20px 24px; margin-top:8px; }
+      .ticket-code-highlight .detail-label{ color:#999; }
+      .ticket-code-highlight .detail-value{ color:#fff; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; 
+                                            font-size:20px; letter-spacing:3px; font-weight:700; }
+      
+      .badge{ display:inline-block; font-size:14px; padding:8px 16px; 
+              border-radius:6px; background:#fff; color:#111; font-weight:700; border:1px solid #111; 
+              margin-top:6px; }
+      
+      .action-buttons{ display:flex; gap:12px; }
+      .btn{ display:inline-flex; align-items:center; justify-content:center; padding:16px 28px; border-radius:10px; 
+            font-weight:800; text-decoration:none; font-size:15px; flex:1; transition:all 0.15s; }
+      .btn.primary{ background:#3b2a17; color:#fff; border:none; }
+      .btn.primary:hover{ background:#2d2013; }
+      .btn.secondary{ background:#fff; color:#111; border:2px solid #111; }
+      .btn.secondary:hover{ background:#111; color:#fff; }
+      .btn.ghost{ background:#fff; color:#111; border:1px solid var(--line); }
+      .btn.ghost:hover{ background:#fafafa; border-color:#111; }
+      
+      @media (max-width:900px){ 
+        .details-grid{ grid-template-columns:1fr; }
+        .container{ padding: 40px 20px; }
+        .success-banner{ padding:36px 24px; }
+        .success-title{ font-size:32px; }
+        .confirmation-card{ padding:32px 24px; }
+        .action-buttons{ flex-direction:column; }
+      }
+    </style>
+
+
+      <div class="confirmation-card">
+        <div class="callout-box">
+          <p class="callout-text">Confirmation sent to your email</p>
+          <p class="callout-subtext">Check your inbox for ticket details and event reminders. Add the event to your calendar so you don't miss it.</p>
+        </div>
+
+        <div class="details-grid">
+          <div class="details-section">
+            <h2 class="section-header">Event Information</h2>
+            
+            <div class="detail-item">
+              <div class="detail-label">Event Name</div>
+              <div class="detail-value" th:text="${event.name}">Event Name</div>
+            </div>
+            
+            <div class="detail-item">
+              <div class="detail-label">Date & Time</div>
+              <div class="detail-value" th:text="${event.dateTime}">Date/Time</div>
+            </div>
+            
+            <div class="detail-item">
+              <div class="detail-label">Location</div>
+              <div class="detail-value" th:text="${event.location}">Location</div>
+            </div>
+            
+            <div class="detail-item">
+              <div class="detail-label">Capacity</div>
+              <div class="badge">
+                <span th:text="${event.capacity}">0</span> spots total
+              </div>
+            </div>
+          </div>
+
+          <div class="details-section">
+            <h2 class="section-header">Your Registration</h2>
+            
+            <div class="detail-item">
+              <div class="detail-label">Name</div>
+              <div class="detail-value" th:text="${attendee.firstName + ' ' + attendee.lastName}">Name</div>
+            </div>
+            
+            <div class="detail-item">
+              <div class="detail-label">Email</div>
+              <div class="detail-value" th:text="${attendee.email}">email</div>
+            </div>
+            
+            <div class="detail-item">
+              <div class="detail-label">Phone</div>
+              <div class="detail-value" th:text="${attendee.phone}">phone</div>
+            </div>
+            
+            <div class="detail-item">
+              <div class="ticket-code-highlight">
+                <div class="detail-label">Ticket Code</div>
+                <div class="detail-value" th:text="${attendee.id}">A-XXXXXX</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <a class="btn primary" th:href="@{|/ui/tickets/${attendee.id}|}">View Full Ticket</a>
+          <a class="btn secondary" th:href="@{|/ui/events/${event.id}|}">Back to Event</a>
+          <a class="btn ghost" th:href="@{/ui/events/my}">My Tickets</a>
+        </div>
+      </div>
+    </div>
+  </th:block>
+</html>

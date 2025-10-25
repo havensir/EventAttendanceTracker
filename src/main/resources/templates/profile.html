@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: shell('home', ${hero} ?: 'Your Profile', ~{::content})">
+<section th:fragment="content">
+  <div style="max-width:960px;margin:60px auto;padding:40px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 4px 18px rgba(0,0,0,0.05);">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;">
+      <div>
+        <h2 style="margin:0;font-size:32px;">Your Profile</h2>
+        <p style="color:var(--muted);margin-top:4px;">Manage your account information.</p>
+      </div>
+
+      <div id="avatar"
+           style="width:64px;height:64px;border-radius:18px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:24px;font-weight:700;"
+           th:text="${((session.userFirst!=null? #strings.substring(session.userFirst,0,1) : 'U') +
+                      (session.userLast !=null? #strings.substring(session.userLast ,0,1) : 'U')).toUpperCase()}">UU</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div>
+        <strong style="display:block;margin-bottom:4px;">First name</strong>
+        <input type="text" th:value="${session.userFirst} ?: ''"
+               style="width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:15px;" disabled />
+      </div>
+      <div>
+        <strong style="display:block;margin-bottom:4px;">Last name</strong>
+        <input type="text" th:value="${session.userLast} ?: ''"
+               style="width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:15px;" disabled />
+      </div>
+      <div>
+        <strong style="display:block;margin-bottom:4px;">Organization</strong>
+        <input type="text" th:value="${session.userOrg} ?: 'JoinUp'"
+               style="width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:15px;" disabled />
+      </div>
+      <div>
+        <strong style="display:block;margin-bottom:4px;">Role</strong>
+        <input type="text" th:value="${session.userRole} ?: 'USER'"
+               style="width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:15px;" disabled />
+      </div>
+      <div style="grid-column:1 / -1;">
+        <strong style="display:block;margin-bottom:4px;">Email</strong>
+        <input type="email" th:value="${session.userEmail} ?: ''"
+               style="width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:15px;" disabled />
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:28px;">
+      <form method="post" action="/logout" style="margin:0;">
+        <button class="btn" type="submit" style="background:#b3261e;">Log out</button>
+      </form>
+      <a th:href="@{|/users/${session.userId}/edit|}" class="btn" style="background:var(--brand);color:#fff;">Edit Full Profile</a>
+    </div>
+  </div>
+</section>
+</html>

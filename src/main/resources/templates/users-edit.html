@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: shell('users', ${hero} ?: 'Edit User', ~{::content})">
+
+<section th:fragment="content">
+  <div style="max-width:980px;margin:60px auto;padding:40px;
+              background:var(--surface);border:1px solid var(--line);
+              border-radius:var(--radius);box-shadow:0 4px 18px rgba(0,0,0,0.05);">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;">
+      <div>
+        <h2 style="margin:0;font-size:32px;">Edit User</h2>
+        <p style="color:var(--muted);margin-top:4px;">Update profile details and permissions.</p>
+      </div>
+
+      <div id="avatar"
+           style="width:64px;height:64px;border-radius:18px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:22px;font-weight:700;"
+           th:text="${(#strings.substring(user.firstName,0,1) + #strings.substring(user.lastName,0,1)).toUpperCase()}">UU</div>
+    </div>
+
+    <form th:action="@{|/users/${user.id}|}" method="post"
+          style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+      <!-- <input type="hidden" name="_method" value="put"/> -->
+
+      <div>
+        <label for="firstName" style="display:block;font-weight:600;margin-bottom:6px;">First name</label>
+        <input id="firstName" name="firstName" th:value="${user.firstName}" required
+               style="width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:15px;"/>
+      </div>
+
+      <div>
+        <label for="lastName" style="display:block;font-weight:600;margin-bottom:6px;">Last name</label>
+        <input id="lastName" name="lastName" th:value="${user.lastName}" required
+               style="width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:15px;"/>
+      </div>
+
+      <div>
+        <label for="company" style="display:block;font-weight:600;margin-bottom:6px;">Company / Organization</label>
+        <input id="company" name="company" th:value="${user.company}"
+               style="width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:15px;"/>
+      </div>
+
+      <div>
+        <label for="email" style="display:block;font-weight:600;margin-bottom:6px;">Email</label>
+        <input id="email" type="email" name="email" th:value="${user.email}"
+               style="width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:15px;"/>
+      </div>
+
+      <div>
+        <label for="phone" style="display:block;font-weight:600;margin-bottom:6px;">Phone</label>
+        <input id="phone" name="phone" th:value="${user.phone}"
+               style="width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:15px;"/>
+      </div>
+
+      <div>
+        <label for="role" style="display:block;font-weight:600;margin-bottom:6px;">Role</label>
+        <select id="role" name="role"
+                style="width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:15px;">
+          <option th:each="r : ${roles}" th:value="${r}" th:text="${r}" th:selected="${r==user.role}">USER</option>
+        </select>
+      </div>
+
+      <div style="grid-column:1 / -1;display:flex;justify-content:flex-end;gap:12px;margin-top:10px;">
+        <a th:href="@{/users}" class="btn"
+           style="background:#fff;color:var(--ink);border:1px solid var(--line);">Back</a>
+        <button class="btn" type="submit" style="background:var(--brand);color:#fff;">Save Changes</button>
+        <form th:action="@{|/users/${user.id}/delete|}" method="post" style="margin:0;">
+          <button type="submit" class="btn" style="background:#b3261e;">Delete</button>
+        </form>
+      </div>
+    </form>
+
+    <div style="margin-top:24px;color:var(--muted);font-size:13px;text-align:right;">
+      <strong>User ID:</strong> <span th:text="${user.id}">1</span>
+    </div>
+  </div>
+
+  <script>
+    // Live initials preview from first/last inputs
+    const f = document.getElementById('firstName');
+    const l = document.getElementById('lastName');
+    const a = document.getElementById('avatar');
+    const upd = () => {
+      const fi = (f.value.trim()[0] || 'U').toUpperCase();
+      const li = (l.value.trim()[0] || 'U').toUpperCase();
+      a.textContent = fi + li;
+    };
+    if (f && l && a) { f.addEventListener('input', upd); l.addEventListener('input', upd); }
+  </script>
+</section>
+</html>

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: shell(
+        'tickets',
+        ${'Your Ticket'},
+        ~{::content}
+      )}">
+
+  <th:block th:fragment="content">
+    <style>
+      .container{ max-width: 900px; margin: 0 auto; padding: 60px 24px; }
+      .hero-banner{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius:20px; padding:48px 40px; text-align:center; color:#fff; margin-bottom:32px; position:relative; overflow:hidden; }
+      .hero-banner::before{ content:'🎉'; position:absolute; font-size:120px; opacity:0.1; top:-20px; right:40px; }
+      .hero-banner::after{ content:'🎟️'; position:absolute; font-size:100px; opacity:0.1; bottom:-10px; left:40px; }
+      .hero-title{ font-size:42px; font-weight:900; margin:0 0 12px; position:relative; z-index:1; }
+      .hero-subtitle{ font-size:18px; opacity:0.95; font-weight:500; position:relative; z-index:1; }
+      
+      .ticket-card{ background:#fff; border:2px solid #e5e7eb; border-radius:20px; padding:40px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); position:relative; }
+      .ticket-card::before{ content:''; position:absolute; top:0; left:40px; right:40px; height:2px; background: repeating-linear-gradient(90deg, #e5e7eb 0px, #e5e7eb 10px, transparent 10px, transparent 20px); }
+      
+      .event-title{ font-size:32px; font-weight:900; margin:0 0 24px; color:#111; display:flex; align-items:center; gap:12px; }
+      .event-title::before{ content:'🎫'; font-size:36px; }
+      
+      .info-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-bottom:32px; }
+      .info-section{ background:#f9fafb; padding:24px; border-radius:16px; border:1px solid #f3f4f6; }
+      .info-section-title{ font-size:14px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:1px; margin:0 0 16px; display:flex; align-items:center; gap:8px; }
+      .info-item{ margin-bottom:12px; display:flex; align-items:start; gap:10px; }
+      .info-item:last-child{ margin-bottom:0; }
+      .info-label{ font-weight:700; color:#374151; min-width:90px; }
+      .info-value{ color:#111; }
+      
+      .ticket-code-section{ background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius:16px; padding:32px; text-align:center; margin:32px 0; position:relative; box-shadow: 0 8px 16px rgba(251,191,36,0.3); }
+      .ticket-code-section::before{ content:'⭐'; position:absolute; font-size:80px; opacity:0.2; top:-10px; left:20px; }
+      .ticket-code-section::after{ content:'✨'; position:absolute; font-size:60px; opacity:0.2; bottom:0; right:30px; }
+      .ticket-code-label{ font-size:14px; font-weight:800; color:#78350f; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:12px; }
+      .ticket-code{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+                     font-size:32px; font-weight:900; color:#78350f; background:#fef3c7; padding:16px 24px; border-radius:12px; 
+                     display:inline-block; letter-spacing:2px; border:3px dashed #f59e0b; }
+      
+      .fun-message{ background:#ecfdf5; border:2px solid #a7f3d0; border-radius:16px; padding:24px; margin-bottom:32px; text-align:center; }
+      .fun-message-icon{ font-size:48px; margin-bottom:12px; }
+      .fun-message-text{ font-size:18px; font-weight:700; color:#065f46; margin:0; }
+      .fun-message-subtext{ font-size:14px; color:#047857; margin:8px 0 0; }
+      
+      .btn-group{ display:flex; gap:12px; }
+      .btn{ padding:16px 24px; border-radius:12px; font-weight:800; border:2px solid #e5e7eb; background:#fff; text-decoration:none; 
+            transition: all 0.2s; font-size:15px; display:inline-flex; align-items:center; justify-content:center; gap:8px; flex:1; }
+      .btn:hover{ background:#f9fafb; border-color:#d1d5db; transform:translateY(-2px); }
+      .btn.primary{ background:#3b2a17; color:#fff; border:none; }
+      .btn.primary:hover{ background:#2d2013; box-shadow: 0 8px 16px rgba(59,42,23,0.3); }
+      
+      .toast{ position:fixed; right:24px; top:24px; background:#10b981; color:#fff; padding:18px 24px; border-radius:16px; 
+              box-shadow:0 10px 30px rgba(16,185,129,0.4); font-weight:700; font-size:16px; display:flex; align-items:center; 
+              gap:12px; z-index:1000; animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+      @keyframes slideIn{ from{ transform: translateX(400px) rotate(10deg); opacity:0; } to{ transform: translateX(0) rotate(0); opacity:1; } }
+      
+      @media (max-width:768px){ 
+        .info-grid{ grid-template-columns:1fr; }
+        .container{ padding: 32px 16px; }
+        .hero-banner{ padding:32px 24px; }
+        .hero-title{ font-size:32px; }
+        .ticket-card{ padding:24px; }
+        .btn-group{ flex-direction:column; }
+      }
+    </style>
+
+    <div th:if="${param.rsvped}" class="toast">
+      <span style="font-size:24px;">🎉</span> Ticket created — you're all set!
+    </div>
+
+    <div class="container">
+      <div class="hero-banner">
+        <h1 class="hero-title">You're Going! 🎊</h1>
+        <p class="hero-subtitle">Your ticket has been confirmed. Get ready for an amazing experience!</p>
+      </div>
+
+      <div class="ticket-card">
+        <h2 class="event-title" th:text="${event.name}">Event Name</h2>
+        
+        <div class="fun-message">
+          <div class="fun-message-icon">🎉</div>
+          <p class="fun-message-text">This is your golden ticket!</p>
+          <p class="fun-message-subtext">Show this code at check-in or save it for your records</p>
+        </div>
+
+        <div class="ticket-code-section">
+          <div class="ticket-code-label">Your Ticket Code</div>
+          <div class="ticket-code" th:text="${attendee.id}">A-XXXXXX</div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-section">
+            <h3 class="info-section-title">📅 Event Details</h3>
+            <div class="info-item">
+              <span class="info-label">Date & Time:</span>
+              <span class="info-value" th:text="${event.dateTime}">Date/Time</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Location:</span>
+              <span class="info-value" th:text="${event.location}">Location</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Capacity:</span>
+              <span class="info-value" th:text="${event.capacity}">0</span>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <h3 class="info-section-title">👤 Attendee Info</h3>
+            <div class="info-item">
+              <span class="info-label">Name:</span>
+              <span class="info-value" th:text="${attendee.firstName + ' ' + attendee.lastName}">Name</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Email:</span>
+              <span class="info-value" th:text="${attendee.email}">email</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Phone:</span>
+              <span class="info-value" th:text="${attendee.phone}">phone</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <a class="btn" th:href="@{/ui/events/my}">← My Tickets</a>
+          <a class="btn primary" th:href="@{|/ui/events/${event.id}|}">View Event Details →</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const t = document.querySelector('.toast');
+      if (t) setTimeout(()=> t.remove(), 3500);
+    </script>
+  </th:block>
+</html>

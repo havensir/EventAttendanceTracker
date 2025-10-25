@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Login • JoinUp</title>
+  <style>
+    :root{ --bg:#ffffff; --surface:#f5f5f5; --ink:#101010; --muted:#616161; --line:#e6e6e6;
+           --brand:#1f3f2f; --btn:#3b2a17; --btn-text:#fff; --radius:16px; }
+    body{margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+    .wrap{min-height:100vh;display:grid;place-items:center;padding:24px}
+    .card{width:100%;max-width:560px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+    h1{margin:0 0 8px}
+    .muted{color:var(--muted)}
+    form{display:grid;gap:12px;margin-top:16px;grid-template-columns:1fr 1fr}
+    input, select{padding:12px;border:1px solid var(--line);border-radius:12px}
+    .wide{grid-column:1 / -1}
+    .btn{padding:12px 14px;background:var(--btn);color:var(--btn-text);border:none;border-radius:12px;font-weight:700;cursor:pointer}
+    .brand{font-size:28px;font-weight:800;margin-bottom:12px;color:var(--brand)}
+    .note{margin-top:10px;color:var(--muted);font-size:13px}
+    .ok{color:#0a7a3e}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="brand">Join<span style="opacity:.6">Up</span>.</div>
+      <h1>Sign in</h1>
+      <p class="muted">Enter your details to start a session.</p>
+      <p th:if="${loggedOut}" class="note ok">You have been logged out.</p>
+
+      <form method="post" action="/login">
+        <input name="firstName" placeholder="First name" required />
+        <input name="lastName" placeholder="Last name" required />
+        <input class="wide" type="email" name="email" placeholder="Email" required />
+        <input class="wide" name="org" placeholder="Organization (optional)" />
+        <select class="wide" name="role">
+          <option value="USER">USER</option>
+          <option value="ADMIN">ADMIN</option>
+          <option value="SUPER_ADMIN">SUPER_ADMIN</option>
+        </select>
+        <button class="btn wide" type="submit">Continue</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
