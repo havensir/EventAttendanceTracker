@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: shell(
+        'tester',
+        ${'API Route Tester'},
+        ~{::content}
+      )}">
+
+  <th:block th:fragment="content">
+    <style>
+      /* Keep colors in-sync with shell variables */
+      :root{
+        --bg:#ffffff; --surface:#f8f9fb; --ink:#101010; --muted:#616161; --line:#e6e6e6;
+        --brand:#1f3f2f; --accent:#1a5d3c; --accent2:#2f7a57;
+      }
+      .outer{ margin: 24px 32px 48px; }
+      .header{ display:flex; align-items:end; justify-content:space-between; margin-bottom:14px; }
+      .title{ font-size:28px; font-weight:900; margin:0; }
+      .sub{ color:var(--muted); margin:6px 0 0; }
+      .bar{
+        display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+        background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px; margin:12px 0 20px;
+      }
+      .btn{ padding:10px 14px; border-radius:10px; font-weight:800; border:1px solid var(--line); background:#fff; cursor:pointer }
+      .btn.primary{ background:var(--brand); color:#fff; border-color:var(--brand) }
+      .btn.ghost{ background:#fff; color:var(--ink); border:1px solid var(--line) }
+      .badge{ padding:8px 12px; border-radius:999px; font-weight:800; border:1px solid var(--line); color:var(--muted); margin-left:auto }
+      .badge.ok{ color:#0f5132; background:#d1fae5; border-color:#a7f3d0 }
+      .badge.err{ color:#842029; background:#fee2e2; border-color:#f5c2c7 }
+      .badge.run{ color:#664d03; background:#fff3cd; border-color:#ffe69c }
+
+      .grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+      @media (max-width:1100px){ .grid{ grid-template-columns:1fr } }
+
+      .card{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px; }
+      .card h3{ margin:0 0 12px; font-size:20px; display:flex; align-items:center; gap:10px }
+      .endpoint{ font:600 12px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; padding:6px 8px; border-radius:8px; border:1px solid var(--line); background:#f6f7f8; color:#333 }
+      .endpoint .verb{ font-weight:900; margin-right:6px }
+      .viewTabs{ display:flex; gap:8px; margin:8px 0 12px }
+      .tab{ padding:6px 10px; border:1px solid var(--line); border-radius:8px; cursor:pointer; font-weight:700; color:#444; background:#fff }
+      .tab.active{ background:#eef1ed; border-color:#d7dbd6 }
+      .viewer{ background:#0f172a; color:#e2e8f0; border-radius:10px; padding:12px; min-height:160px; font:500 13px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; overflow:auto; border:1px solid #0b1220 }
+      .tableWrap{ border:1px solid var(--line); border-radius:10px; overflow:auto }
+      table{ width:100%; border-collapse:collapse; background:#fff; }
+      thead{ background:#f3f4f6 }
+      th, td{ border-bottom:1px solid #eee; padding:10px; text-align:left; font-size:14px }
+      tbody tr:hover{ background:#f7f7f7 }
+
+      .footer{ display:flex; gap:8px; margin-top:12px; flex-wrap:wrap }
+      .small{ color:var(--muted); font-size:12px; margin-left:auto }
+
+      .builder{ margin-top:20px }
+      .row{ display:flex; gap:8px; flex-wrap:wrap }
+      .row + .row{ margin-top:8px }
+      .select, .input, .ta{
+        border:1px solid var(--line); background:#fff; border-radius:10px; padding:10px; font-size:14px; color:#202020
+      }
+      .select{ min-width:120px }
+      .input{ flex:1; min-width:240px }
+      .ta{ width:100%; height:120px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace }
+      .hint{ color:var(--muted); font-size:12px; margin-top:6px }
+
+      .ok{ color:#0f5132 } .err{ color:#842029 }
+      .empty{
+        display:grid; place-items:center; padding:26px; border:1px dashed var(--line);
+        border-radius:10px; color:#777; background:#fafafa
+      }
+    </style>
+
+    <div class="outer">
+      <div class="header">
+        <div>
+          <h2 class="title">API Route Tester</h2>
+          <p class="sub">Run quick checks and craft requests against your JSON endpoints.</p>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="bar">
+        <button class="btn primary" id="runAll">Run All</button>
+        <button class="btn ghost" id="clearAll">Clear</button>
+        <button class="btn ghost" id="autoBtn">Auto-refresh (off)</button>
+        <div id="summary" class="badge">Idle</div>
+      </div>
+
+      <!-- Status list -->
+      <div class="card" style="margin-bottom:16px">
+        <h3 style="margin-bottom:4px">Quick Status</h3>
+        <div id="checks" style="display:grid; gap:8px; margin-top:8px">
+          <!-- injected -->
+        </div>
+      </div>
+
+      <!-- Endpoint cards -->
+      <div class="grid">
+
+        <!-- Events -->
+        <div class="card" id="card-events">
+          <h3>
+            Events
+            <span class="endpoint"><span class="verb">GET</span>/api/events</span>
+          </h3>
+          <div class="viewTabs">
+            <button data-tab="events" data-view="json" class="tab active">JSON</button>
+            <button data-tab="events" data-view="table" class="tab">Table</button>
+          </div>
+          <div id="events-json" class="viewer"><div class="empty">Run tests to see results</div></div>
+          <div id="events-table" class="tableWrap" style="display:none"><div class="empty">Run tests to see results</div></div>
+          <div class="footer">
+            <button class="btn" data-hit="/api/events" data-name="events">Probe</button>
+            <span class="small" id="events-time"></span>
+          </div>
+        </div>
+
+        <!-- Attendees -->
+        <div class="card" id="card-attendees">
+          <h3>
+            Attendees
+            <span class="endpoint"><span class="verb">GET</span>/api/attendees</span>
+          </h3>
+          <div class="viewTabs">
+            <button data-tab="attendees" data-view="json" class="tab active">JSON</button>
+            <button data-tab="attendees" data-view="table" class="tab">Table</button>
+          </div>
+          <div id="attendees-json" class="viewer"><div class="empty">Run tests to see results</div></div>
+          <div id="attendees-table" class="tableWrap" style="display:none"><div class="empty">Run tests to see results</div></div>
+          <div class="footer">
+            <button class="btn" data-hit="/api/attendees" data-name="attendees">Probe</button>
+            <span class="small" id="attendees-time"></span>
+          </div>
+        </div>
+
+        <!-- Check-ins -->
+        <div class="card" id="card-checkins">
+          <h3>
+            Check-ins
+            <span class="endpoint"><span class="verb">GET</span>/api/checkins</span>
+          </h3>
+          <div class="viewTabs">
+            <button data-tab="checkins" data-view="json" class="tab active">JSON</button>
+            <button data-tab="checkins" data-view="table" class="tab">Table</button>
+          </div>
+          <div id="checkins-json" class="viewer"><div class="empty">Run tests to see results</div></div>
+          <div id="checkins-table" class="tableWrap" style="display:none"><div class="empty">Run tests to see results</div></div>
+          <div class="footer">
+            <button class="btn" data-hit="/api/checkins" data-name="checkins">Probe</button>
+            <span class="small" id="checkins-time"></span>
+          </div>
+          <div class="hint">Tip: add <b>?eventId=E-001</b> in the Request Builder to filter.</div>
+        </div>
+
+        <!-- Users -->
+        <div class="card" id="card-users">
+          <h3>
+            Users
+            <span class="endpoint"><span class="verb">GET</span>/api/users</span>
+          </h3>
+          <div class="viewTabs">
+            <button data-tab="users" data-view="json" class="tab active">JSON</button>
+            <button data-tab="users" data-view="table" class="tab">Table</button>
+          </div>
+          <div id="users-json" class="viewer"><div class="empty">Run tests to see results</div></div>
+          <div id="users-table" class="tableWrap" style="display:none"><div class="empty">Run tests to see results</div></div>
+          <div class="footer">
+            <button class="btn" data-hit="/api/users" data-name="users">Probe</button>
+            <span class="small" id="users-time"></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Request Builder -->
+      <div class="card builder">
+        <h3>Request Builder</h3>
+        <div class="row">
+          <select id="verb" class="select" title="HTTP Method">
+            <option>GET</option>
+            <option>POST</option>
+            <option>PUT</option>
+            <option>DELETE</option>
+          </select>
+          <input id="path" class="input" placeholder="/api/events or /api/attendees?eventId=E-001" />
+        </div>
+        <div class="row">
+          <input id="hdrName" class="input" placeholder="Header name (optional)" />
+          <input id="hdrVal" class="input" placeholder="Header value (optional)" />
+          <button id="addHdr" class="btn">Add Header</button>
+        </div>
+        <div id="hdrs" class="hint">Headers: (none)</div>
+        <div class="row" style="flex-direction:column">
+          <textarea id="body" class="ta" placeholder='JSON body (for POST/PUT), e.g. {"id":"E-010","name":"Demo","dateTime":"2025-12-12T18:00:00-05:00","location":"Hall","capacity":50}'></textarea>
+          <div class="hint">For JSON, make sure it’s valid; Content-Type is set automatically to application/json when body is present.</div>
+        </div>
+        <div class="row" style="justify-content:flex-end">
+          <button id="send" class="btn primary">Send Request</button>
+        </div>
+
+        <div style="margin-top:12px">
+          <div class="viewTabs">
+            <button data-tab="builder" data-view="json" class="tab active">JSON</button>
+            <button data-tab="builder" data-view="table" class="tab">Table</button>
+          </div>
+          <div id="builder-json" class="viewer"><div class="empty">No response yet</div></div>
+          <div id="builder-table" class="tableWrap" style="display:none"><div class="empty">No response yet</div></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ---------- Utilities ----------
+      const $ = (sel, ctx=document) => ctx.querySelector(sel);
+      const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+      const pretty = (x) => JSON.stringify(x, null, 2);
+      const now = () => new Date().toLocaleTimeString();
+
+      // state
+      const views = { events:'json', attendees:'json', checkins:'json', users:'json', builder:'json' };
+      const dataStore = { events:null, attendees:null, checkins:null, users:null, builder:null };
+      let autoTimer = null;
+      let customHeaders = {};
+
+      // ---------- Rendering ----------
+      function renderJSON(id, data){
+        const el = document.getElementById(id + '-json');
+        el.innerHTML = `<pre>${pretty(data)}</pre>`;
+      }
+      function renderTable(id, data){
+        const el = document.getElementById(id + '-table');
+        if (!Array.isArray(data) || data.length === 0){
+          el.innerHTML = `<div class="empty">No data</div>`;
+          return;
+        }
+        const keys = Object.keys(data[0]);
+        const head = keys.map(k => `<th>${k}</th>`).join('');
+        const rows = data.map(row => {
+          return `<tr>${keys.map(k => `<td>${typeof row[k]==='object' ? pretty(row[k]) : (row[k]??'')}</td>`).join('')}</tr>`;
+        }).join('');
+        el.innerHTML = `<table><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>`;
+      }
+      function paint(id){
+        const view = views[id];
+        const d = dataStore[id];
+        document.getElementById(id+'-json').style.display = view==='json' ? 'block' : 'none';
+        document.getElementById(id+'-table').style.display = view==='table' ? 'block' : 'none';
+        if (d==null){
+          (view==='json' ? document.getElementById(id+'-json') : document.getElementById(id+'-table')).innerHTML =
+            `<div class="empty">${id==='builder'?'No response yet':'Run tests to see results'}</div>`;
+          return;
+        }
+        if (view==='json') renderJSON(id, d);
+        else renderTable(id, d);
+      }
+
+      // ---------- Tabs ----------
+      $$('.tab').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const id   = btn.dataset.tab;
+          const view = btn.dataset.view;
+          views[id] = view;
+          // activate tab group
+          $$('.tab', btn.parentElement).forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+          paint(id);
+        });
+      });
+
+      // ---------- Quick checks list ----------
+      const checks = [
+        { name:'events',   path:'/api/events' },
+        { name:'attendees',path:'/api/attendees' },
+        { name:'checkins', path:'/api/checkins' },
+        { name:'users',    path:'/api/users' }
+      ];
+      const checksRoot = document.getElementById('checks');
+      checksRoot.innerHTML = checks.map(c => `
+        <div class="card" style="padding:10px">
+          <div style="display:flex; align-items:center; gap:10px">
+            <strong style="min-width:120px; text-transform:capitalize">${c.name}</strong>
+            <code class="endpoint"><span class="verb">GET</span>${c.path}</code>
+            <span id="${c.name}-stamp" class="small" style="margin-left:auto"></span>
+          </div>
+        </div>
+      `).join('');
+
+      function markSummary(state, text){
+        const s = document.getElementById('summary');
+        s.textContent = text;
+        s.className = 'badge ' + (state==='ok' ? 'ok' : state==='err' ? 'err' : state==='run' ? 'run' : '');
+      }
+
+      async function probe(name, path){
+        const t0 = performance.now();
+        try{
+          const res = await fetch(path, { headers:{ 'Accept':'application/json' }});
+          const ct = res.headers.get('content-type') || '';
+          const data = ct.includes('application/json') ? await res.json() : { status: res.status, contentType: ct };
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          dataStore[name] = data;
+          paint(name);
+          document.getElementById(name+'-time').textContent = `${(performance.now()-t0).toFixed(0)}ms`;
+          document.getElementById(name+'-stamp').textContent = `✓ ${now()}`;
+          return true;
+        }catch(err){
+          dataStore[name] = { error: String(err) };
+          paint(name);
+          document.getElementById(name+'-time').textContent = 'error';
+          document.getElementById(name+'-stamp').textContent = `✗ ${now()}`;
+          return false;
+        }
+      }
+
+      async function runAll(){
+        markSummary('run','Running…');
+        const results = await Promise.all(checks.map(c => probe(c.name, c.path)));
+        const allOk = results.every(Boolean);
+        markSummary(allOk?'ok':'err', allOk?'All OK':'Some failed');
+      }
+
+      // Endpoint “Probe” buttons
+      $$('[data-hit]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const name = btn.dataset.name, path = btn.dataset.hit;
+          probe(name, path).then(ok => markSummary(ok?'ok':'err', ok?'OK':'Error'));
+        });
+      });
+
+      // Toolbar actions
+      document.getElementById('runAll').addEventListener('click', runAll);
+      document.getElementById('clearAll').addEventListener('click', ()=>{
+        Object.keys(dataStore).forEach(k => dataStore[k]=null);
+        ['events','attendees','checkins','users','builder'].forEach(paint);
+        markSummary('', 'Idle');
+        $$('#checks .small').forEach(el=>el.textContent='');
+        ['events','attendees','checkins','users'].forEach(n=>{
+          const t = document.getElementById(n+'-time'); if (t) t.textContent='';
+        });
+      });
+      document.getElementById('autoBtn').addEventListener('click', (e)=>{
+        if (autoTimer){
+          clearInterval(autoTimer); autoTimer=null;
+          e.target.textContent = 'Auto-refresh (off)';
+        }else{
+          runAll();
+          autoTimer = setInterval(runAll, 5000);
+          e.target.textContent = 'Auto-refresh (5s)';
+        }
+      });
+
+      // ---------- Request Builder ----------
+      const hdrsView = document.getElementById('hdrs');
+      function refreshHdrs(){
+        const keys = Object.keys(customHeaders);
+        hdrsView.textContent = keys.length ? `Headers: ${keys.map(k=>`${k}: ${customHeaders[k]}`).join(' | ')}` : 'Headers: (none)';
+      }
+      document.getElementById('addHdr').addEventListener('click', ()=>{
+        const k = document.getElementById('hdrName').value.trim();
+        const v = document.getElementById('hdrVal').value.trim();
+        if (k) customHeaders[k]=v||'';
+        document.getElementById('hdrName').value='';
+        document.getElementById('hdrVal').value='';
+        refreshHdrs();
+      });
+
+      async function sendBuilder(){
+        const verb = document.getElementById('verb').value;
+        const path = document.getElementById('path').value.trim() || '/api/events';
+        const bodyTxt = document.getElementById('body').value.trim();
+        const hdrs = { ...customHeaders };
+        let fetchOpts = { method: verb, headers: { 'Accept':'application/json', ...hdrs } };
+
+        if (bodyTxt && ['POST','PUT','PATCH'].includes(verb)){
+          fetchOpts.headers['Content-Type'] = 'application/json';
+          try{ fetchOpts.body = JSON.stringify(JSON.parse(bodyTxt)); }
+          catch{ fetchOpts.body = bodyTxt; } // send raw if not JSON
+        }
+
+        try{
+          const t0 = performance.now();
+          const res = await fetch(path, fetchOpts);
+          const ct = res.headers.get('content-type') || '';
+          let data = null;
+          if (ct.includes('application/json')) data = await res.json();
+          else if (ct.includes('text/')) data = { text: await res.text() };
+          else data = { status: res.status, contentType: ct };
+
+          dataStore.builder = data;
+          paint('builder');
+          document.getElementById('summary').textContent = `${verb} ${path} · ${(performance.now()-t0).toFixed(0)}ms`;
+          document.getElementById('summary').className = 'badge ' + (res.ok ? 'ok' : 'err');
+        }catch(err){
+          dataStore.builder = { error: String(err) };
+          paint('builder');
+          markSummary('err', 'Request failed');
+        }
+      }
+      document.getElementById('send').addEventListener('click', sendBuilder);
+
+      // initial paints
+      ['events','attendees','checkins','users','builder'].forEach(paint);
+      refreshHdrs();
+    </script>
+  </th:block>
+</html>

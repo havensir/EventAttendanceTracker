@@ -101,7 +101,7 @@
         <a th:classappend="${active}=='home' ? ' active'" th:href="@{/}"><span class="icon">🏠</span>Home</a>
         <a th:classappend="${active}=='events' ? ' active'" th:href="@{/ui/events}"><span class="icon">✉️</span>Events</a>
         <a th:classappend="${active}=='tickets' ? ' active'" th:href="@{/ui/tickets}"><span class="icon">🎟️</span>Tickets</a>
-        <a th:classappend="${active}=='tester' ? ' active'" th:href="@{/ui/mock-tester}"><span class="icon">🧪</span>API Tester</a>
+        <a th:classappend="${active}=='tester' ? ' active'" th:href="@{/ui/api-tester}"><span class="icon">🧪</span>API Tester</a>
 
         <!-- SUPER_ADMIN only -->
         <a th:if="${session.userRole}=='SUPER_ADMIN'"
