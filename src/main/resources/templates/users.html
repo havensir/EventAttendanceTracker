@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: shell('users', ${hero} ?: 'Users', ~{::content})">
+
+<section th:fragment="content">
+  <div style="max-width:1040px;margin:0 auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <h2 style="margin:0;">All Users</h2>
+      <a th:href="@{/users}" class="btn" style="background:var(--btn);color:var(--btn-text);">Refresh</a>
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr style="border-bottom:1px solid var(--line);text-align:left;">
+          <th style="padding:10px;">ID</th>
+          <th style="padding:10px;">First</th>
+          <th style="padding:10px;">Last</th>
+          <th style="padding:10px;">Role</th>
+          <th style="padding:10px;">Company</th>
+          <th style="padding:10px;">Email</th>
+          <th style="padding:10px;">Phone</th>
+          <th style="padding:10px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="u : ${users}" style="border-bottom:1px solid var(--line);">
+          <td style="padding:10px;" th:text="${u.id}">1</td>
+          <td style="padding:10px;" th:text="${u.firstName}">Jane</td>
+          <td style="padding:10px;" th:text="${u.lastName}">Doe</td>
+          <td style="padding:10px;"><span style="font-size:12px;padding:2px 6px;border:1px solid var(--line);border-radius:8px;"
+              th:text="${u.role}">USER</span></td>
+          <td style="padding:10px;" th:text="${u.company}">JoinUp</td>
+          <td style="padding:10px;" th:text="${u.email}">jane@example.com</td>
+          <td style="padding:10px;" th:text="${u.phone}">555-1234</td>
+          <td style="padding:10px;display:flex;gap:6px;">
+            <a th:href="@{|/users/${u.id}/edit|}" class="btn"
+               style="background:#fff;color:var(--ink);border:1px solid var(--line);">Edit</a>
+            <form th:action="@{|/users/${u.id}/delete|}" method="post" style="margin:0;">
+              <button type="submit" class="btn" style="background:#b3261e;">Delete</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Add User -->
+    <div style="margin-top:32px;padding:20px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);">
+      <h3>Add New User</h3>
+      <form th:action="@{/users}" method="post" th:object="${userForm}"
+            style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <input type="text" th:field="*{firstName}" placeholder="First name" required
+               style="padding:10px;border:1px solid var(--line);border-radius:12px;"/>
+        <input type="text" th:field="*{lastName}" placeholder="Last name" required
+               style="padding:10px;border:1px solid var(--line);border-radius:12px;"/>
+        <input type="text" th:field="*{company}" placeholder="Company"
+               style="padding:10px;border:1px solid var(--line);border-radius:12px;"/>
+        <input type="email" th:field="*{email}" placeholder="Email"
+               style="padding:10px;border:1px solid var(--line);border-radius:12px;"/>
+        <input type="text" th:field="*{phone}" placeholder="Phone"
+               style="padding:10px;border:1px solid var(--line);border-radius:12px;"/>
+        <select th:field="*{role}" class="wide" style="grid-column:1/-1;padding:10px;border:1px solid var(--line);border-radius:12px;">
+          <option th:each="r : ${roles}" th:value="${r}" th:text="${r}">USER</option>
+        </select>
+        <div style="grid-column:1 / -1;">
+          <button class="btn" type="submit">Add User</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+</html>

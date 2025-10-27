@@ -1,8 +1,6 @@
 # 🎟️ Event Attendance Tracker: *JoinUp*
 This is the Group 4 project repo for IT4045C Enterprise Application Development (Fall 2025).
 
-## 🚨 Group PSA 🚨
-### Please *ALWAYS* **branch** off of `dev`, **not** main!
 
 ## 📝 Introduction
 
@@ -24,7 +22,45 @@ This system replaces manual sign-in sheets with a faster, more accurate digital 
 
 
 ## 🚀 Startup Notes
-*Key application startup notes will eventually go here*
+### 🌐 Application Navigation Guide
+
+Below are the key URLs for navigating through the JoinUp web application once it’s running locally (`http://localhost:8080`):
+
+| **Page / Feature** | **URL** | **Description** |
+|---------------------|----------|------------------|
+| 🔐 **Login Page** | [`/login`](http://localhost:8080/login) | Default login screen for users to sign in. |
+| 🏠 **Home Dashboard** | [`http://localhost:8080/`](http://localhost:8080/) | Displays personalized overview and navigation links after logging in. |
+| 🎟️ **Events List** | [`/ui/events`](http://localhost:8080/ui/events) | Lists all upcoming events with location filters and RSVP options. |
+| 🗓️ **Event Details & RSVP** | [`/ui/events/E-001`](http://localhost:8080/ui/events/E-001) | Event info page with RSVP form for attendees. |
+| ✅ **RSVP Confirmation** | [`/ui/events/E-001/rsvp/confirm?attendeeId=A-50482CE2`](http://localhost:8080/ui/events/E-001/rsvp/confirm?attendeeId=A-50482CE2) | Confirmation screen after RSVP submission. |
+| 🎫 **Ticket View** | [`/ui/tickets/A-50482CE2`](http://localhost:8080/ui/tickets/A-50482CE2) | Displays attendee’s ticket with event and user info. |
+| 🧾 **All Tickets** | [`/ui/tickets`](http://localhost:8080/ui/tickets) | Lists all tickets registered by the current user. |
+| 🧠 **API Route Tester** | [`/ui/api-tester`](http://localhost:8080/ui/api-tester) | Internal testing tool for API endpoints and JSON data validation. |
+| 👥 **User Directory** | [`/users`](http://localhost:8080/users) | Admin page showing all users, roles, and contact info. |
+| ✏️ **Edit User Profile** | [`/users/6/edit`](http://localhost:8080/users/6/edit) | Edit screen for updating user details, roles, or deleting accounts. |
+| 📤 **Host Event Hub** | [`/ui/host`](http://localhost:8080/ui/host) | (Planned feature) Hub for creating and publishing events as an organizer. |
+
+---
+
+### 🧩 Requirements
+- Java 17 or higher
+- Maven (or use VS Code Spring Boot Extension Pack)
+- VS Code or IntelliJ installed  
+
+### ▶️ Running the Application (Using Code)
+
+If you’re using **VS Code** or **IntelliJ**, open the integrated terminal and run:
+
+```bash
+mvn spring-boot:run
+```
+Once the app starts successfully, you’ll see:
+
+```bash
+Tomcat started on port(s): 8080
+Started JoinUpApplication in [x.xxx] seconds
+```
+
 
 ## 🖼️ Storyboard (Screen Mockups)
 *→ Mockups can be found in `/docs/mockups/`*

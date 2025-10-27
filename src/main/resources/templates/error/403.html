@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: shell(
+        'home',
+        ${'Access Restricted'},
+        ~{::content}
+      )}">
+  <th:block th:fragment="content">
+    <style>
+      .err-wrap{
+        margin:0 35px 35px;
+        display:grid;
+        place-items:center;
+        min-height:calc(100vh - 320px);
+      }
+      .err-inner{
+        text-align:center;
+        max-width:760px;
+        width:100%;
+      }
+      .brand-big{
+        font-weight:900;
+        letter-spacing:.2px;
+        margin:0 auto 10px;
+        font-size:42px;
+        line-height:1;
+        background:linear-gradient(90deg,#3b2a17 0%, #8b5a2b 60%, #d8bfa0 100%);
+        -webkit-background-clip:text;
+        background-clip:text;
+        color:transparent;
+      }
+      .code{
+        font-size:120px;
+        line-height:1;
+        font-weight:900;
+        letter-spacing:2px;
+        margin:4px 0 10px;
+        color:#3b2a17;
+      }
+      .title{
+        font-size:26px;
+        font-weight:800;
+        margin:0 0 8px;
+        color:#101010;
+      }
+      .muted{
+        color:#616161;
+        font-size:16px;
+        margin:0 auto 18px;
+        max-width:620px;
+      }
+      .panel{
+        background:#fff;
+        border:1px solid #e6e6e6;
+        border-radius:16px;
+        padding:28px 22px;
+        box-shadow:0 1px 0 rgba(0,0,0,.03);
+      }
+      .actions{
+        display:flex;
+        gap:12px;
+        justify-content:center;
+        flex-wrap:wrap;
+        margin-top:10px;
+      }
+      .btn{
+        padding:12px 16px;
+        border-radius:12px;
+        font-weight:800;
+        cursor:pointer;
+        text-decoration:none;
+        border:1px solid #e6e6e6;
+        background:#fff;
+        color:#101010;
+        transition:.15s ease;
+      }
+      .btn:hover{
+        background:#f5f5f5;
+        border-color:#dadada;
+      }
+      .btn.primary{
+        background:#3b2a17;
+        color:#fff;
+        border-color:#3b2a17;
+      }
+      .btn.primary:hover{
+        filter:brightness(1.05);
+      }
+      @media (max-width:640px){
+        .code{font-size:84px}
+        .brand-big{font-size:34px}
+      }
+    </style>
+
+    <div class="err-wrap">
+      <div class="err-inner">
+        <div class="brand-big">Join<span style="color:#000; -webkit-text-fill-color:#000;">Up</span><span style="color:#000; -webkit-text-fill-color:#000;">.</span></div>
+        <div class="code">403</div>
+        <div class="panel">
+          <p class="title">Access Restricted</p>
+          <p class="muted">
+            You don’t have permission to view this page.<br/>
+            This section is restricted to <strong>Super Admins</strong> only.
+          </p>
+          <div class="actions">
+            <a class="btn primary" th:href="@{/}">Return Home</a>
+            <a class="btn" th:href="@{/profile}">Go to My Profile</a>
+            <a class="btn" th:href="@{/login}">Switch Account</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </th:block>
+</html>

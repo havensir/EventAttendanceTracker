@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:fragment="shell(active, hero, content)">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title th:text="${appName} ?: 'JoinUp'">JoinUp</title>
+
+  <!-- Favicons / PWA -->
+  <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon.png}">
+  <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32.png}">
+  <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16.png}">
+  <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+  <link rel="manifest" th:href="@{/site.webmanifest}">
+  <link rel="icon" sizes="192x192" th:href="@{/android-chrome-192x192.png}">
+  <link rel="icon" sizes="512x512" th:href="@{/android-chrome-512x512.png}">
+  <meta name="theme-color" content="#1f3f2f"/>
+
+  <style>
+    :root{
+      --bg:#ffffff; --surface:#f5f5f5; --ink:#101010; --muted:#616161; --line:#e6e6e6;
+      --brand:#1f3f2f; --cta:#efe5b6; --chip:#eceae4; --btn:#3b2a17; --btn-text:#fff; --accent:#1a5d3c; --radius:16px;
+      --nav-size:18px;
+      --icon: currentColor;
+      --focus: #1a5d3c33;
+      --scrollbar:#cfcfcf;
+      --warn:#f59e0b;
+      --warn-bg:#fff7e6;
+      --warn-border:#fde1ad;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+    a{color:inherit;text-decoration:none}
+
+    .page{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+    .main{flex-direction:column}
+    .hero{background:var(--brand);color:#fff;padding:38px 46px;border-bottom:1px solid var(--line)}
+    .hero h1{margin:0 0 6px;font-size:44px;line-height:1.1}
+    .hero p{margin:0;font-size:18px;opacity:.92}
+    .content{padding:24px 32px}
+
+    /* Sidebar layout: top scrollable, bottom fixed & always visible */
+    .side{
+      border-right:1px solid var(--line);
+      display:flex; flex-direction:column;
+      height:100vh; position:sticky; top:0; left:0;
+      background:var(--bg);
+    }
+    .side-top{
+      padding:22px 18px; padding-bottom:12px;
+      flex:1 1 auto; min-height:0; /* enables child overflow scrolling */
+      overflow:auto;
+    }
+    .side-bottom-wrapper{
+      padding:16px 18px 18px;
+      border-top:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.9), #fff);
+      position:sticky; bottom:0; /* stays pinned even if top scrolls */
+    }
+
+    /* Custom (thin) scrollbar for the scrollable top section */
+    .side-top::-webkit-scrollbar{width:10px}
+    .side-top::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:10px;border:2px solid transparent;background-clip:content-box}
+    .side-top{scrollbar-width:thin; scrollbar-color:var(--scrollbar) transparent}
+
+    .profile{display:flex;align-items:center;gap:12px;position:relative;margin-bottom:10px}
+    .avatar{width:44px;height:44px;border-radius:12px;background:#1f6d46;color:#fff;display:grid;place-items:center;font-weight:700}
+    .name{font-weight:700}
+    .org{color:var(--muted);font-size:12px;margin-top:2px}
+
+    /* Caret-only Account button */
+    .account-btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:32px;height:32px;border:1px solid var(--line);
+      border-radius:8px;background:#fff;cursor:pointer;
+    }
+    .account-btn .icon svg{stroke:var(--ink);transition:transform .15s ease}
+    .account-btn[aria-expanded="true"] .icon svg{transform:rotate(180deg)}
+    .chev{display:inline-grid;place-items:center;width:20px;height:20px}
+
+    /* Nav */
+    .nav{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+    .nav a{
+      display:flex;align-items:center;gap:12px;
+      padding:12px 14px;border-radius:12px;font-weight:800;
+      font-size:var(--nav-size); line-height:1; min-height:48px;
+      letter-spacing:.2px;
+    }
+    .nav a.active, .nav a:hover{background:#eef1ed}
+    .icon{display:inline-grid;place-items:center;width:26px;height:26px;flex:0 0 26px;opacity:.9}
+    .icon svg{width:22px;height:22px;stroke:var(--icon);}
+
+    .ctaCard{background:var(--chip);border:1px solid var(--line);border-radius:14px;padding:14px}
+    .ctaCard p{margin:0 0 10px;color:var(--muted);font-size:13px}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;background:var(--btn);color:var(--btn-text);border-radius:12px;font-weight:800;border:none;cursor:pointer}
+    .btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+    .btn .icon svg{stroke:#fff}
+
+    .brand{font-size:32px;margin-top:16px;margin-bottom:10px;font-weight:800;opacity:.85;text-align:left}
+
+    /* Dropdown menu */
+    .menu{position:absolute;top:58px;right:0;background:#fff;border:1px solid var(--line);border-radius:12px;
+          box-shadow:0 10px 30px rgba(0,0,0,.08);display:none;min-width:260px;z-index:20;overflow:hidden}
+    .menu.open{display:block}
+    .menu-header{padding:10px 12px;border-bottom:1px solid var(--line);background:#fafafa}
+    .menu-header .mh-name{font-weight:700}
+    .menu-header .mh-sub{color:var(--muted);font-size:12px;margin-top:3px}
+    .menu a, .menu form button{display:flex;gap:10px;align-items:center;width:100%;text-align:left;padding:10px 12px;background:#fff;border:none;cursor:pointer}
+    .menu a:hover, .menu form button:hover{background:#f7f7f7}
+    .menu .sep{height:1px;background:var(--line);margin:4px 0}
+
+    /* Focus visibility */
+    :where(a,button,[role="button"],.account-btn):focus-visible{
+      outline:3px solid var(--focus);
+      outline-offset:2px;
+      border-radius:12px;
+    }
+
+    /* Beta banner */
+    .beta-banner{
+      display:flex;align-items:start;gap:14px;
+      background:var(--warn-bg);
+      color:#6b4a00;
+      border-bottom:1px solid var(--warn-border);
+      padding:12px 16px;
+    }
+    .beta-banner__icon svg{width:20px;height:20px}
+    .beta-banner__text{flex:1}
+    .beta-banner__title{font-weight:800;letter-spacing:.2px}
+    .beta-banner__desc{margin-top:4px;color:#7a5b14}
+    .beta-banner__actions{display:flex;gap:8px}
+    .beta-btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 10px;border:1px solid var(--warn-border);
+      border-radius:10px;background:#fff7e6;cursor:pointer;font-weight:700;color:#7a5b14;
+    }
+    .beta-banner--collapsed{
+      padding:6px 16px;
+      align-items:center;
+    }
+    .beta-banner--collapsed .beta-banner__desc{display:none}
+    .beta-banner--collapsed .beta-banner__title{font-weight:700}
+    .beta-banner--collapsed .beta-banner__icon svg{transform:translateY(1px)}
+    .beta-toggle[aria-expanded="false"] .chev svg{transform:rotate(180deg)}
+    .beta-toggle .chev svg{transition:transform .15s ease}
+
+    @media (max-width:980px){
+      .page{grid-template-columns:1fr}
+      .hero{padding:28px 22px}
+      .content{padding:18px}
+      .side{position:static;height:auto}
+      .side-top{max-height:40vh}
+      .side-bottom-wrapper{position:sticky;bottom:0}
+      .beta-banner{flex-direction:column}
+      .beta-banner__actions{align-self:flex-end}
+    }
+
+    @media (prefers-reduced-motion:no-preference){
+      .nav a{transition:background .15s ease, transform .05s ease}
+      .nav a:active{transform:translateY(1px)}
+      .btn,.account-btn,.beta-btn{transition:opacity .15s ease, transform .05s ease}
+      .btn:active,.account-btn:active,.beta-btn:active{transform:translateY(1px)}
+    }
+  </style>
+</head>
+<body>
+  <!-- SVG sprite -->
+  <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+    <defs>
+      <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 10.5L12 3l9 7.5"></path><path d="M5 10.5V21h14V10.5"></path><path d="M10 21v-6h4v6"></path>
+      </symbol>
+      <symbol id="icon-events" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path>
+      </symbol>
+      <symbol id="icon-ticket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2z"></path>
+        <path d="M13 5v14" opacity=".35"></path>
+      </symbol>
+      <symbol id="icon-test" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 3h6"></path><path d="M10 3v5l-4.5 8.5A3 3 0 0 0 8.2 21h7.6a3 3 0 0 0 2.7-4.5L14 8V3"></path>
+      </symbol>
+      <symbol id="icon-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="10" cy="8" r="4"></circle>
+        <path d="M20 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+      </symbol>
+      <symbol id="icon-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path>
+      </symbol>
+      <symbol id="icon-exit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 12h10"></path><path d="M15 7l5 5-5 5"></path><path d="M4 4h7v16H4z"></path>
+      </symbol>
+      <symbol id="icon-crown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 8l4 3 5-6 5 6 4-3v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M5 19h14"></path>
+      </symbol>
+      <symbol id="icon-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="7" r="4"></circle><path d="M6 21v-1a6 6 0 0 1 12 0v1"></path>
+      </symbol>
+      <symbol id="icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 9l6 6 6-6"></path>
+      </symbol>
+      <symbol id="icon-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="page">
+    <aside class="side">
+      <!-- SCROLLABLE TOP -->
+      <div class="side-top">
+        <!-- Profile + Caret button -->
+        <div class="profile">
+          <div class="avatar"
+               th:text="${((session.userFirst!=null? #strings.substring(session.userFirst,0,1) : 'U') +
+                           (session.userLast !=null? #strings.substring(session.userLast ,0,1) : 'U')).toUpperCase()}">JU</div>
+
+          <div style="flex:1 1 auto; min-width:0">
+            <div class="name" th:text="${session.userName} ?: 'Jane Doe'">Jane Doe</div>
+            <div class="org"  th:text="${session.userOrg}  ?: 'JoinUp'">JoinUp</div>
+            <div class="org" style="margin-top:2px;">
+              <span style="font-size:11px;padding:2px 6px;border:1px solid var(--line);border-radius:8px;background:#fff;"
+                    th:text="${session.userRole} ?: 'USER'">USER</span>
+            </div>
+          </div>
+
+          <button id="accountBtn" class="account-btn" type="button"
+                  aria-haspopup="menu" aria-expanded="false" aria-controls="profileMenu"
+                  title="Account options">
+            <span class="icon chev" aria-hidden="true">
+              <svg><use href="#icon-chevron"></use></svg>
+            </span>
+          </button>
+
+          <!-- Dropdown -->
+          <div class="menu" id="profileMenu" role="menu" aria-label="Profile menu">
+            <div class="menu-header">
+              <div class="mh-name" th:text="${session.userName} ?: 'Jane Doe'">Jane Doe</div>
+              <div class="mh-sub"  th:text="${session.userEmail} ?: 'jane@example.com'">jane@example.com</div>
+            </div>
+            <a th:href="@{/profile}" role="menuitem">
+              <span class="icon" aria-hidden="true"><svg><use href="#icon-edit"></use></svg></span>
+              <span>Edit profile</span>
+            </a>
+            <div class="sep"></div>
+            <form th:action="@{/logout}" method="post" style="margin:0">
+              <button type="submit" role="menuitem">
+                <span class="icon" aria-hidden="true"><svg><use href="#icon-exit"></use></svg></span>
+                <span>Sign out</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="nav" aria-label="Primary">
+          <a th:classappend="${active}=='home' ? ' active'" th:href="@{/}">
+            <span class="icon" aria-hidden="true"><svg><use href="#icon-home"></use></svg></span>
+            <span>Home</span>
+          </a>
+          <a th:classappend="${active}=='events' ? ' active'" th:href="@{/ui/events}">
+            <span class="icon" aria-hidden="true"><svg><use href="#icon-events"></use></svg></span>
+            <span>Events</span>
+          </a>
+          <a th:classappend="${active}=='tickets' ? ' active'" th:href="@{/ui/tickets}">
+            <span class="icon" aria-hidden="true"><svg><use href="#icon-ticket"></use></svg></span>
+            <span>Tickets</span>
+          </a>
+          <a th:classappend="${active}=='tester' ? ' active'" th:href="@{/ui/api-tester}">
+            <span class="icon" aria-hidden="true"><svg><use href="#icon-test"></use></svg></span>
+            <span>API Tester</span>
+          </a>
+
+          <!-- SUPER_ADMIN only -->
+          <a th:if="${session.userRole}=='SUPER_ADMIN'"
+             th:classappend="${active}=='users' ? ' active'"
+             th:href="@{/users}">
+            <span class="icon" aria-hidden="true"><svg><use href="#icon-users"></use></svg></span>
+            <span>Users</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- FIXED BOTTOM (always visible) -->
+      <div class="side-bottom-wrapper">
+        <div class="ctaCard">
+          <strong>Ready to host your own event?</strong>
+          <p>The Host Hub is your starting point.</p>
+          <button class="btn" type="button">
+            <span class="icon" aria-hidden="true"><svg><use href="#icon-crown"></use></svg></span>
+            <span>Host An Event</span>
+          </button>
+        </div>
+
+        <div class="brand">Join<span style="opacity:.6">Up</span>.</div>
+
+        <div class="side-bottom">
+          <form th:action="@{/logout}" method="post" style="margin:0">
+            <button class="btn btn-ghost" type="submit" title="Sign out from this device">
+              <span class="icon" aria-hidden="true"><svg><use href="#icon-exit"></use></svg></span>
+              <span>Sign out</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Collapsible Beta Banner -->
+    
+
+      <section class="hero">
+        <h1 th:text="${hero} ?: 'Welcome to JoinUp'">Welcome to JoinUp</h1>
+        <p>Server-rendered UI shell with reusable layout.</p>
+      </section>
+
+      <section class="content" th:replace="${content}">
+        <!-- page content gets injected here -->
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function(){
+      // Profile menu (caret-only button)
+      const accountBtn = document.getElementById('accountBtn');
+      const menu = document.getElementById('profileMenu');
+
+      function closeMenu(){
+        if(!menu) return;
+        menu.classList.remove('open');
+        if (accountBtn) accountBtn.setAttribute('aria-expanded','false');
+      }
+      function toggleMenu(){
+        if(!menu || !accountBtn) return;
+        const isOpen = menu.classList.toggle('open');
+        accountBtn.setAttribute('aria-expanded', String(isOpen));
+      }
+
+      if (accountBtn && menu) {
+        accountBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleMenu();
+        });
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('#profileMenu') && !e.target.closest('#accountBtn')) {
+            closeMenu();
+          }
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closeMenu();
+        });
+      }
+
+      // Collapsible Beta banner with persistence
+      const banner = document.getElementById('betaBanner');
+      const toggle = document.getElementById('betaToggle');
+      const LS_KEY = 'joinup_beta_banner_collapsed';
+
+      function applyBannerState(collapsed){
+        if(!banner || !toggle) return;
+        banner.classList.toggle('beta-banner--collapsed', collapsed);
+        banner.dataset.collapsed = String(collapsed);
+        toggle.setAttribute('aria-expanded', String(!collapsed));
+        toggle.querySelector('span').firstChild && (toggle.querySelector('span').textContent = collapsed ? 'Expand' : 'Collapse');
+      }
+
+      // Load state
+      try {
+        const saved = localStorage.getItem(LS_KEY);
+        if (saved !== null) applyBannerState(saved === 'true');
+      } catch(e) { /* ignore storage errors */ }
+
+      if (toggle) {
+        toggle.addEventListener('click', () => {
+          const collapsed = banner.dataset.collapsed === 'true' ? false : true;
+          applyBannerState(collapsed);
+          try { localStorage.setItem(LS_KEY, String(collapsed)); } catch(e) {}
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
