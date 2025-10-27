@@ -1,48 +1,6 @@
 # 🎟️ Event Attendance Tracker: *JoinUp*
 This is the Group 4 project repo for IT4045C Enterprise Application Development (Fall 2025).
 
-## 🚨 Group PSA 🚨
-
-### Please *ALWAYS* **branch** off of `dev`, **not** `main`!
-
-The `dev` branch is our shared development environment — **never commit directly to `dev`**.  
-Each contributor must create a **new branch for their issue or feature** before making changes.
-
----
-
-### ✅ Correct Workflow
-
-1. **Start from `dev`**
-   - On GitHub, select the `dev` branch from the branch dropdown.
-2. **Create your own branch**
-   - Name it after your issue or task (e.g., `issue-28-controller-tests`).
-3. **Make your edits**
-   - Commit directly to *your branch only* — not to `dev`.
-4. **Open a Pull Request (PR)**
-   - Compare your branch → `dev`.
-   - Add a clear title and description of what you changed.
-   - Wait for review and approval before merging.
-
-➡️ See full directions in [`/docs/BRANCH_AND_PR_GUIDE_UI.md`](./docs/BRANCH_AND_PR_GUIDE_UI.md).
-
----
-
-### 🧩 Project Setup Reminder
-
-If you haven’t set up the project yet, follow the step-by-step instructions here:  
-📘 [`/docs/SETUP_AND_RUN.md`](./docs/SETUP_AND_RUN.md)
-
-This includes:
-- Installing Java 17+ and Maven 3.8+
-- Running the Spring Boot app on `localhost:8080`
-- Using the mock UI tester for endpoint validation
-- Generating and viewing test reports
-
----
-
-Let’s keep our workflow clean and consistent — this helps everyone avoid merge conflicts, broken builds, and lost work.  
-Thank you for branching responsibly! 🙌
-
 
 ## 📝 Introduction
 
@@ -64,25 +22,45 @@ This system replaces manual sign-in sheets with a faster, more accurate digital 
 
 
 ## 🚀 Startup Notes
+### 🌐 Application Navigation Guide
+
+Below are the key URLs for navigating through the JoinUp web application once it’s running locally (`http://localhost:8080`):
+
+| **Page / Feature** | **URL** | **Description** |
+|---------------------|----------|------------------|
+| 🔐 **Login Page** | [`/login`](http://localhost:8080/login) | Default login screen for users to sign in. |
+| 🏠 **Home Dashboard** | [`http://localhost:8080/`](http://localhost:8080/) | Displays personalized overview and navigation links after logging in. |
+| 🎟️ **Events List** | [`/ui/events`](http://localhost:8080/ui/events) | Lists all upcoming events with location filters and RSVP options. |
+| 🗓️ **Event Details & RSVP** | [`/ui/events/E-001`](http://localhost:8080/ui/events/E-001) | Event info page with RSVP form for attendees. |
+| ✅ **RSVP Confirmation** | [`/ui/events/E-001/rsvp/confirm?attendeeId=A-50482CE2`](http://localhost:8080/ui/events/E-001/rsvp/confirm?attendeeId=A-50482CE2) | Confirmation screen after RSVP submission. |
+| 🎫 **Ticket View** | [`/ui/tickets/A-50482CE2`](http://localhost:8080/ui/tickets/A-50482CE2) | Displays attendee’s ticket with event and user info. |
+| 🧾 **All Tickets** | [`/ui/tickets`](http://localhost:8080/ui/tickets) | Lists all tickets registered by the current user. |
+| 🧠 **API Route Tester** | [`/ui/api-tester`](http://localhost:8080/ui/api-tester) | Internal testing tool for API endpoints and JSON data validation. |
+| 👥 **User Directory** | [`/users`](http://localhost:8080/users) | Admin page showing all users, roles, and contact info. |
+| ✏️ **Edit User Profile** | [`/users/6/edit`](http://localhost:8080/users/6/edit) | Edit screen for updating user details, roles, or deleting accounts. |
+| 📤 **Host Event Hub** | [`/ui/host`](http://localhost:8080/ui/host) | (Planned feature) Hub for creating and publishing events as an organizer. |
+
+---
 
 ### 🧩 Requirements
 - Java 17 or higher
 - Maven (or use VS Code Spring Boot Extension Pack)
+- VS Code or IntelliJ installed  
 
-### ▶️ Running the Application (VS Code)
-1. Open this folder (`EventAttendanceTracker`) in VS Code.
-2. Make sure the **Java Extension Pack** and **Spring Boot Extension Pack** are enabled.
-3. Open the **Spring Boot Dashboard** (on the left sidebar).
-4. Find `JoinUpApplication` → click the **▶ Run** button.
-5. Wait for the console to show...
-6. Open your browser and go to [http://localhost:8080/api/events](http://localhost:8080/api/events)
-- You should FOR NOW see: `TODO: List events` 
-- This confirms the backend is running correctly.
+### ▶️ Running the Application (Using Code)
 
-### 💡 Notes
-- The current backend is a **skeleton (Milestone 1)** - all endpoints return “501 Not Implemented.”
-- Future milestones will implement actual logic in each layer.
-- `.gitkeep` files keep the folder structure visible for everyone until real code is added.
+If you’re using **VS Code** or **IntelliJ**, open the integrated terminal and run:
+
+```bash
+mvn spring-boot:run
+```
+Once the app starts successfully, you’ll see:
+
+```bash
+Tomcat started on port(s): 8080
+Started JoinUpApplication in [x.xxx] seconds
+```
+
 
 ## 🖼️ Storyboard (Screen Mockups)
 *→ Mockups can be found in `/docs/mockups/`*
