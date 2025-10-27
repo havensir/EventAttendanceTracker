@@ -1,6 +1,43 @@
 # 🎟️ Event Attendance Tracker: *JoinUp*
 This is the Group 4 project repo for IT4045C Enterprise Application Development (Fall 2025).
 
+## 🚨 Group 4 PSA 🚨
+
+### Please *ALWAYS* **branch** off of `dev`, **not** `main`!
+
+The `dev` branch is our shared development environment — **never commit directly to `dev`**.  
+Each contributor must create a **new branch for their issue or feature** before making changes.
+
+### ✅ Correct Workflow
+
+1. **Start from `dev`**
+   - On GitHub, select the `dev` branch from the branch dropdown.
+2. **Create your own branch**
+   - Name it after your issue or task (e.g., `issue-28-controller-tests`).
+3. **Make your edits**
+   - Commit directly to *your branch only* — not to `dev`.
+4. **Open a Pull Request (PR)**
+   - Compare your branch → `dev`.
+   - Add a clear title and description of what you changed.
+   - Wait for review and approval before merging.
+
+➡️ See full directions in [`/docs/BRANCH_AND_PR_GUIDE_UI.md`](./docs/BRANCH_AND_PR_GUIDE_UI.md).
+
+---
+
+### 🧩 Project Setup Reminder
+
+If you haven’t set up the project yet, follow the step-by-step instructions here:  
+📘 [`/docs/SETUP_AND_RUN.md`](./docs/SETUP_AND_RUN.md)
+
+This includes:
+- Installing Java 17+ and Maven 3.8+
+- Running the Spring Boot app on `localhost:8080`
+- Using the mock UI tester for endpoint validation
+- Generating and viewing test reports
+
+Let’s keep our workflow clean and consistent — this helps everyone avoid merge conflicts, broken builds, and lost work.  
+Thank you for branching responsibly! 🙌
 
 ## 📝 Introduction
 
@@ -32,7 +69,7 @@ Below are the key URLs for navigating through the JoinUp web application once it
 | 🏠 **Home Dashboard** | [`http://localhost:8080/`](http://localhost:8080/) | Displays personalized overview and navigation links after logging in. |
 | 🎟️ **Events List** | [`/ui/events`](http://localhost:8080/ui/events) | Lists all upcoming events with location filters and RSVP options. |
 | 🗓️ **Event Details & RSVP** | [`/ui/events/E-001`](http://localhost:8080/ui/events/E-001) | Event info page with RSVP form for attendees. |
-| ✅ **RSVP Confirmation** | [`/ui/events/E-001/rsvp/confirm?attendeeId=A-50482CE2`](http://localhost:8080/ui/events/E-001/rsvp/confirm?attendeeId=A-50482CE2) | Confirmation screen after RSVP submission. |
+| ✅ **RSVP Confirmation** | [`/ui/events/E-001/rsvp/confirm?attendeeId=A-50482CE2`](http://localhost:8080/ui/events/E-001/rsvp/confirm?attendeeId=A-50482CE2) | Confirmation screen **after** RSVP submission. |
 | 🎫 **Ticket View** | [`/ui/tickets/A-50482CE2`](http://localhost:8080/ui/tickets/A-50482CE2) | Displays attendee’s ticket with event and user info. |
 | 🧾 **All Tickets** | [`/ui/tickets`](http://localhost:8080/ui/tickets) | Lists all tickets registered by the current user. |
 | 🧠 **API Route Tester** | [`/ui/api-tester`](http://localhost:8080/ui/api-tester) | Internal testing tool for API endpoints and JSON data validation. |
