@@ -20,7 +20,7 @@ public class EventServiceImpl implements IEventService {
     @Override
     public Event createEvent(Event event) {
         if (event.getId() == null || event.getId().isBlank()) {
-            event.id = "E-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+            event.setId("E-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         }
         events.put(event.getId(), event);
         return event;

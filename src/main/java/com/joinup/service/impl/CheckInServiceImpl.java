@@ -34,13 +34,13 @@ public class CheckInServiceImpl implements ICheckInService {
     @Override
     public CheckIn create(CheckIn checkIn) {
         if (checkIn.getCheckInId() == null || checkIn.getCheckInId().isBlank()) {
-            checkIn.checkInId = "CI-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+            checkIn.setCheckInId("CI-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         }
         if (checkIn.getTimestamp() == null || checkIn.getTimestamp().isBlank()) {
-            checkIn.timestamp = OffsetDateTime.now().toString();
+            checkIn.setTimestamp(OffsetDateTime.now().toString());
         }
-        if (checkIn.getStatus() == null || checkIn.getStatus().isBlank()) {
-            checkIn.status = "success";
+        if (checkIn.getStatusValue() == null || checkIn.getStatusValue().isBlank()) {
+            checkIn.setStatus("success");
         }
         checkIns.put(checkIn.getCheckInId(), checkIn);
         return checkIn;
