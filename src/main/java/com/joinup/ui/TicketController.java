@@ -30,18 +30,24 @@ public class TicketController {
         this.events = events;
     }
 
-    @GetMapping("/{attendeeId}")
-    public String ticket(@PathVariable String attendeeId, Model model) {
+    private Attendee getAttendeeOrThrow(String attendeeId) {
         Attendee a = attendees.getById(attendeeId);
         if (a == null) {
             throw new org.springframework.web.server.ResponseStatusException(
-                org.springframework.http.HttpStatus.NOT_FOUND, "Ticket not found");
+                    org.springframework.http.HttpStatus.NOT_FOUND, "Ticket not found");
         }
         Event e = events.getEventById(a.getEventId());
         if (e == null) {
             throw new org.springframework.web.server.ResponseStatusException(
-                org.springframework.http.HttpStatus.NOT_FOUND, "Event not found");
+                    org.springframework.http.HttpStatus.NOT_FOUND, "Event not found");
         }
+        return a;
+    }
+
+    @GetMapping("/{attendeeId}")
+    public String ticket(@PathVariable String attendeeId, Model model) {
+        Attendee a = getAttendeeOrThrow(attendeeId);
+        Event e = events.getEventById(a.getEventId());
 
         model.addAttribute("attendee", a);
         model.addAttribute("event", e);
@@ -53,16 +59,8 @@ public class TicketController {
     /** NEW: generate a minimal PDF version of the ticket */
     @GetMapping("/{attendeeId}/download")
     public void download(@PathVariable String attendeeId, HttpServletResponse res) {
-        Attendee a = attendees.getById(attendeeId);
-        if (a == null) {
-            throw new org.springframework.web.server.ResponseStatusException(
-                org.springframework.http.HttpStatus.NOT_FOUND, "Ticket not found");
-        }
+        Attendee a = getAttendeeOrThrow(attendeeId);
         Event e = events.getEventById(a.getEventId());
-        if (e == null) {
-            throw new org.springframework.web.server.ResponseStatusException(
-                org.springframework.http.HttpStatus.NOT_FOUND, "Event not found");
-        }
 
         res.setContentType("application/pdf");
         res.setHeader("Content-Disposition", "attachment; filename=ticket-" + attendeeId + ".pdf");

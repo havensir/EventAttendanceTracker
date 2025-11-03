@@ -4,7 +4,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+/**
+ * Intercepts HTTP requests to enforce authentication and authorization rules.
+ * <p>
+ * Allows public paths without authentication and restricts access to certain
+ * paths based on user role.
+ */
 public class AuthInterceptor implements HandlerInterceptor {
+
+    /**
+     * Checks each HTTP request before it reaches a controller.
+     *
+     * @param req     the HTTP request
+     * @param res     the HTTP response
+     * @param handler the chosen handler to execute
+     * @return true if the request should proceed, false otherwise
+     * @throws Exception if an error occurs while handling the request
+     */
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler) throws Exception {
         String uri = req.getRequestURI();
@@ -49,6 +65,14 @@ public class AuthInterceptor implements HandlerInterceptor {
         return true;
     }
 
+    /**
+     * Checks if the request is for a user editing or updating their own account.
+     *
+     * @param req the HTTP request
+     * @param uri the requested URI
+     * @param me  the ID of the currently logged-in user
+     * @return true if the user is allowed to edit/update themselves, false otherwise
+     */
     private boolean isSelfEditOrUpdate(HttpServletRequest req, String uri, Long me) {
         if (me == null) return false;
 
