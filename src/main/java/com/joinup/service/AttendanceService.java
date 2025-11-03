@@ -1,19 +1,29 @@
-public void registerAttendance(String attendeeName) {
-    validateAttendee(attendeeName);
-    persistAttendance(attendeeName);
-    notifyUI(attendeeName);
-}
+package com.joinup.service;
+import com.joinup.model.Attendee;
+import org.springframework.stereotype.Service;
 
-private void validateAttendee(String attendeeName) {
-    if (attendeeName == null || attendeeName.isEmpty()) {
-        throw new IllegalArgumentException("Attendee name cannot be null or empty");
+@Service
+public class AttendanceService {
+
+    private final IAttendeeService attendees;
+
+    public AttendanceService(IAttendeeService attendees) {
+        this.attendees = attendees;
     }
-}
 
-private void persistAttendance(String attendeeName) {
-    database.save(attendeeName);
-}
+    public Attendee registerAttendance(String attendeeName) {
+        validateAttendee(attendeeName);
 
-private void notifyUI(String attendeeName) {
-    ui.showToast(attendeeName + " registered successfully");
+        Attendee a = new Attendee();
+        a.setFirstName(attendeeName);
+        attendees.registerAttendee(a);
+
+        return a;
+    }
+
+    private void validateAttendee(String attendeeName) {
+        if (attendeeName == null || attendeeName.isEmpty()) {
+            throw new IllegalArgumentException("Attendee name cannot be null or empty");
+        }
+    }
 }
